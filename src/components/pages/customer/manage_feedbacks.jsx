@@ -102,7 +102,7 @@ function Customer_Manage_Feedbacks() {
 
   const COLORS = ["#FF6B6B", "#4ECDC4", "#FFD166", "#F9F871", "#A58FE3"];
   const BASE_URL = "http://127.0.0.1:8000/feedback/";
-  const RELOCATIONS_URL = "http://127.0.0.1:8000/relocation/get-driver/";
+  const RELOCATIONS_URL = "http://127.0.0.1:8000/relocation/user/";
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -1206,6 +1206,7 @@ function Customer_Manage_Feedbacks() {
     </div>
   );
 }
+
 
 
 

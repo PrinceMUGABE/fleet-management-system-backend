@@ -998,63 +998,92 @@ function Admin_Manage_Relocations() {
     );
   };
 
-  // Replace your existing filteredData with this enhanced version that includes the advanced filters
-  const filteredData = relocations.filter((relocation) => {
-    // Text search filter
-    const matchesSearch = [
-      relocation.start_point,
-      relocation.end_point,
-      relocation.status,
-      relocation.relocation_size,
-      relocation.origin_district,
-      relocation.destination_district,
-      relocation.origin_sector,
-      relocation.destination_sector,
-      relocation.created_by?.phone_number,
-      relocation.created_by?.email,
-      relocation.vehicle?.plate_number,
-      relocation.driver?.user?.phone_number,
-    ].some(
-      (field) =>
-        field &&
-        field.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  useEffect(() => {
+    // You might not need to fetch again, just re-render the filteredData table
+    setCurrentPage(1); // reset to first page on filter
+  }, [
+    searchQuery,
+    filterStatus,
+    filterStartDate,
+    filterEndDate,
+    filterOriginDistrict,
+    filterDestDistrict,
+  ]);
 
-    // Status filter
-    const matchesStatus =
-      filterStatus === "all" || relocation.status === filterStatus;
+  // ✅ Memoize filteredData to optimize performance and ensure proper re-rendering
+  const filteredData = useMemo(() => {
+    return relocations.filter((relocation) => {
+      // 🔍 Text search filter
+      const matchesSearch = [
+        relocation.start_point,
+        relocation.end_point,
+        relocation.status,
+        relocation.relocation_size,
+        relocation.origin_district,
+        relocation.destination_district,
+        relocation.origin_sector,
+        relocation.destination_sector,
+        relocation.created_by?.phone_number,
+        relocation.created_by?.email,
+        relocation.vehicle?.plate_number,
+        relocation.driver?.user?.phone_number,
+      ].some(
+        (field) =>
+          field &&
+          field.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
-    // Date filter
-    let matchesDate = true;
-    if (filterStartDate) {
-      const moveDate = new Date(relocation.move_datetime);
-      const startFilterDate = new Date(filterStartDate);
-      startFilterDate.setHours(0, 0, 0, 0);
-      matchesDate = moveDate >= startFilterDate;
-    }
-    if (filterEndDate && matchesDate) {
-      const moveDate = new Date(relocation.move_datetime);
-      const endFilterDate = new Date(filterEndDate);
-      endFilterDate.setHours(23, 59, 59, 999);
-      matchesDate = moveDate <= endFilterDate;
-    }
+      // 🟡 Status filter
+      const matchesStatus =
+        filterStatus === "all" || relocation.status === filterStatus;
 
-    // District filters
-    const matchesOriginDistrict =
-      !filterOriginDistrict ||
-      relocation.origin_district === filterOriginDistrict;
-    const matchesDestDistrict =
-      !filterDestDistrict ||
-      relocation.destination_district === filterDestDistrict;
+      // 📅 Date range filter
+      let matchesDate = true;
+      if (filterStartDate) {
+        const moveDate = new Date(relocation.move_datetime);
+        const startFilterDate = new Date(filterStartDate);
+        startFilterDate.setHours(0, 0, 0, 0);
+        matchesDate = moveDate >= startFilterDate;
+      }
+      if (filterEndDate && matchesDate) {
+        const moveDate = new Date(relocation.move_datetime);
+        const endFilterDate = new Date(filterEndDate);
+        endFilterDate.setHours(23, 59, 59, 999);
+        matchesDate = moveDate <= endFilterDate;
+      }
 
-    return (
-      matchesSearch &&
-      matchesStatus &&
-      matchesDate &&
-      matchesOriginDistrict &&
-      matchesDestDistrict
-    );
-  });
+      // 📍 Origin and Destination district filters
+      const matchesOriginDistrict =
+        !filterOriginDistrict ||
+        relocation.origin_district === filterOriginDistrict;
+
+      const matchesDestDistrict =
+        !filterDestDistrict ||
+        relocation.destination_district === filterDestDistrict;
+
+      // ✅ Final filter check
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesDate &&
+        matchesOriginDistrict &&
+        matchesDestDistrict
+      );
+    });
+  }, [
+    relocations,
+    searchQuery,
+    filterStatus,
+    filterStartDate,
+    filterEndDate,
+    filterOriginDistrict,
+    filterDestDistrict,
+  ]);
+
+  // 🐛 Debug filtered results
+  useEffect(() => {
+    console.log("Filtered data updated:", filteredData);
+  }, [filteredData]);
 
   const currentRelocations = filteredData.slice(
     (currentPage - 1) * relocationsPerPage,
@@ -1487,8 +1516,8 @@ function Admin_Manage_Relocations() {
             </div>
           )}
 
-{renderSummaryCards()}
-{renderAdvancedFilters()}
+          {renderSummaryCards()}
+          {renderAdvancedFilters()}
 
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="w-full lg:w-2/3">

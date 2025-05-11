@@ -1077,7 +1077,7 @@ useEffect(() => {
                               <div className="space-y-2">
                                 <div>
                                   <span className="text-gray-500 text-sm font-medium">
-                                    Adjusted Cost
+                                    Cost
                                   </span>
                                   <p className="text-lg font-semibold">
                                     $
@@ -1086,14 +1086,14 @@ useEffect(() => {
                                     )}
                                   </p>
                                 </div>
-                                <div>
+                                {/* <div>
                                   <span className="text-gray-500 text-sm font-medium">
                                     Base Cost
                                   </span>
                                   <p className="text-lg font-semibold">
                                     ${Number(relocation.base_cost).toFixed(2)}
                                   </p>
-                                </div>
+                                </div> */}
                               </div>
                             </td>
 

@@ -187,6 +187,7 @@ function Admin_Manage_Vehicles() {
         vehicle_model: e.target.vehicle_model.value, // Add this line
         plate_number: e.target.plate_number.value, // Add this line
         driving_category: e.target.driving_category.value,
+        totl_man_power: e.target.total_man_power.value,
       };
 
       // Add image base64 if selected or existing
@@ -365,7 +366,62 @@ function Admin_Manage_Vehicles() {
     )
   );
 
-  const currentVehicles = filteredData.slice(
+   // Update the filteredData variable to include both search and filters
+   const searchFilteredData = vehicleData.filter((vehicle) =>
+    [
+      vehicle.type,
+      vehicle.total_weight_to_carry.toString(),
+      vehicle.vehicle_model,
+      vehicle.plate_number,
+      vehicle.total_man_power.toString(),
+    ].some((field) => field?.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  
+
+  const applyFilters = (data) => {
+    return data.filter((vehicle) => {
+      // Check type filter
+      if (
+        activeFilters.type.length > 0 &&
+        !activeFilters.type.includes(vehicle.type)
+      ) {
+        return false;
+      }
+
+      // Check relocation size filter
+      if (
+        activeFilters.relocationSize.length > 0 &&
+        !activeFilters.relocationSize.includes(vehicle.relocation_size)
+      ) {
+        return false;
+      }
+
+      // Check driving category filter
+      if (
+        activeFilters.drivingCategory.length > 0 &&
+        !activeFilters.drivingCategory.includes(vehicle.driving_category)
+      ) {
+        return false;
+      }
+
+      // Check weight range filter
+      if (activeFilters.weightRange.length > 0) {
+        const weight = parseFloat(vehicle.total_weight_to_carry);
+        return activeFilters.weightRange.some((range) => {
+          const [min, max] = range.split("-").map(Number);
+          return weight >= min && weight < max;
+        });
+      }
+
+      return true;
+    });
+  };
+
+  const filteredAndSortedData = applyFilters(searchFilteredData);
+
+
+  const currentVehicles = filteredAndSortedData.slice(
     (currentPage - 1) * vehiclesPerPage,
     currentPage * vehiclesPerPage
   );
@@ -427,45 +483,7 @@ function Admin_Manage_Vehicles() {
     setCurrentPage(1);
   };
 
-  // Add this function to apply filters
-  const applyFilters = (data) => {
-    return data.filter((vehicle) => {
-      // Check type filter
-      if (
-        activeFilters.type.length > 0 &&
-        !activeFilters.type.includes(vehicle.type)
-      ) {
-        return false;
-      }
 
-      // Check relocation size filter
-      if (
-        activeFilters.relocationSize.length > 0 &&
-        !activeFilters.relocationSize.includes(vehicle.relocation_size)
-      ) {
-        return false;
-      }
-
-      // Check driving category filter
-      if (
-        activeFilters.drivingCategory.length > 0 &&
-        !activeFilters.drivingCategory.includes(vehicle.driving_category)
-      ) {
-        return false;
-      }
-
-      // Check weight range filter
-      if (activeFilters.weightRange.length > 0) {
-        const weight = parseFloat(vehicle.total_weight_to_carry);
-        return activeFilters.weightRange.some((range) => {
-          const [min, max] = range.split("-").map(Number);
-          return weight >= min && weight < max;
-        });
-      }
-
-      return true;
-    });
-  };
 
   // Add this function to reset filters
   const resetFilters = () => {
@@ -505,17 +523,9 @@ function Admin_Manage_Vehicles() {
     return { types, relocationSizes, drivingCategories, weightRanges };
   };
 
-  // Update the filteredData variable to include both search and filters
-  const searchFilteredData = vehicleData.filter((vehicle) =>
-    [
-      vehicle.type,
-      vehicle.total_weight_to_carry.toString(),
-      vehicle.vehicle_model,
-      vehicle.plate_number,
-    ].some((field) => field?.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+ 
 
-  const filteredAndSortedData = applyFilters(searchFilteredData);
+  
 
   const renderModal = () => {
     return (
@@ -599,6 +609,21 @@ function Admin_Manage_Vehicles() {
                     className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-gray-300 mb-2">
+                    Total Man Power to Pack
+                  </label>
+                  <input
+                    type="number"
+                    name="total_man_power"
+                    defaultValue={currentVehicle?.total_man_power || ""}
+                    required
+                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                  />
+                </div>
+
+                
                 <div>
                   <label className="block text-gray-300 mb-2">
                     Vehicle Image
@@ -904,7 +929,7 @@ function Admin_Manage_Vehicles() {
                       <FontAwesomeIcon icon={faTruck} className="mr-2" />
                       <span className="font-semibold">Total Vehicles:</span>
                       <span className="ml-2 px-3 py-1 bg-red-600 text-white rounded-full">
-                        {filteredData.length}
+                        {filteredAndSortedData.length}
                       </span>
                     </span>
                   </div>
@@ -995,6 +1020,7 @@ function Admin_Manage_Vehicles() {
                         <th className="px-6 py-3">Plate Number</th>
                         <th className="px-6 py-3">Driving Category</th>
                         <th className="px-6 py-3">Total Weight (kg)</th>
+                        <th className="px-6 py-3">Total Man Power to Pack (kg)</th>
                         <th className="px-6 py-3">Created Date</th>
                         <th className="px-6 py-3 rounded-tr-lg">Actions</th>
                       </tr>
@@ -1054,6 +1080,9 @@ function Admin_Manage_Vehicles() {
                             </td>
                             <td className="px-6 py-4 text-gray-300">
                               {vehicle.total_weight_to_carry} kg
+                            </td>
+                            <td className="px-6 py-4 text-gray-300">
+                              {vehicle.total_man_power} kg
                             </td>
                             <td className="px-6 py-4 text-gray-300">
                               {new Date(
@@ -1119,8 +1148,10 @@ function Admin_Manage_Vehicles() {
                     </span>
                     <button
                       onClick={() => setCurrentPage((prev) => prev + 1)}
+                      // To use filteredAndSortedData instead:
                       disabled={
-                        currentPage * vehiclesPerPage >= filteredData.length
+                        currentPage * vehiclesPerPage >=
+                        filteredAndSortedData.length
                       }
                       className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 hover:bg-gray-600 transition disabled:cursor-not-allowed"
                     >
