@@ -220,8 +220,6 @@ function Admin_Manage_Drivers() {
     </div>
   );
 
-
-
   const renderDriverDetailsModal = () =>
     selectedDriver && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -244,7 +242,9 @@ function Admin_Manage_Drivers() {
             </div>
             <div>
               <p className="font-semibold text-blue-800">Gender</p>
-              <p className="capitalize text-gray-800">{selectedDriver.gender}</p>
+              <p className="capitalize text-gray-800">
+                {selectedDriver.gender}
+              </p>
             </div>
             <div>
               <p className="font-semibold text-blue-800">Phone Number</p>
@@ -256,19 +256,19 @@ function Admin_Manage_Drivers() {
             </div>
             <div>
               <p className="font-semibold text-blue-800">Driving Categories</p>
-              <p className="text-gray-800 capitalize">{selectedDriver.driving_categories.join(", ")}</p>
+              <p className="text-gray-800 capitalize">
+                {selectedDriver.driving_categories.join(", ")}
+              </p>
             </div>
             <div>
               <p className="font-semibold text-blue-800">Status</p>
               <p className="uppercase text-gray-800">{selectedDriver.status}</p>
             </div>
             <div>
-              <p className="font-semibold text-blue-800">Resident</p>
-              <p className="uppercase text-gray-800">{selectedDriver.residence}</p>
-            </div>
-            <div>
               <p className="font-semibold text-blue-800">Availability Status</p>
-              <p className="uppercase text-gray-800">{selectedDriver.availability_status}</p>
+              <p className="uppercase text-gray-800">
+                {selectedDriver.availability_status}
+              </p>
             </div>
           </div>
         </div>
@@ -683,11 +683,8 @@ function Admin_Manage_Drivers() {
                 <option value="other">Other</option>
               </select>
             </div>
-            <div>
-              
-            </div>
+            <div></div>
           </div>
-
         </div>
 
         <div className="flex justify-end space-x-2 mt-6">
@@ -735,7 +732,6 @@ function Admin_Manage_Drivers() {
         form.elements.gender.value = driver.gender;
         form.elements.phone_number.value = driver.phone_number;
         form.elements.email.value = driver.email;
-        form.elements.residence.value = driver.residence;
         form.elements.status.value = driver.status;
         form.elements.availability_status.value = driver.availability_status;
 
@@ -864,56 +860,120 @@ function Admin_Manage_Drivers() {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage("");
+    setMessageType("");
 
     try {
-        const formData = new FormData();
-        const form = e.target;
-        
-        const fields = [
-            "first_name", "last_name", "gender", "phone_number", "email", 
-           "residence", "status", "availability_status"
-        ];
+      const formData = new FormData();
+      const form = e.target;
 
-        // Directly use the form's current values
-        fields.forEach((field) => {
-            formData.append(field, form.elements[field].value);
-        });
+      const fields = [
+        "first_name",
+        "last_name",
+        "gender",
+        "phone_number",
+        "email",
+        "status",
+        "availability_status",
+      ];
 
-        const selectedCategories = Array.from(form.elements.drivingCategories)
-            .filter((checkbox) => checkbox.checked)
-            .map((checkbox) => checkbox.value);
-        formData.append("driving_categories", selectedCategories);
+      // Directly use the form's current values
+      fields.forEach((field) => {
+        formData.append(field, form.elements[field].value);
+      });
 
+      // Handle optional fields
+      if (form.elements.national_id_number) {
+        formData.append(
+          "national_id_number",
+          form.elements.national_id_number.value
+        );
+      }
 
-        const token = localStorage.getItem("token");
-        const url = currentDriver 
-            ? `${BASE_URL}update/${currentDriver.id}/` 
-            : `${BASE_URL}create/`;
+      if (form.elements.driving_license_number) {
+        formData.append(
+          "driving_license_number",
+          form.elements.driving_license_number.value
+        );
+      }
 
-        const response = await axios({
-            method: currentDriver ? "put" : "post",
-            url,
-            data: formData,
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data",
-            },
-        });
+      // Handle checkbox selection for driving categories
+      const selectedCategories = Array.from(form.elements.drivingCategories)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.value);
+      formData.append("driving_categories", selectedCategories);
 
-        setMessage(currentDriver ? "Driver updated successfully" : "Driver added successfully");
-        setMessageType("success");
+      const token = localStorage.getItem("token");
+      const url = currentDriver
+        ? `${BASE_URL}update/${currentDriver.id}/`
+        : `${BASE_URL}create/`;
 
-        await handleFetch();
-        setIsModalOpen(false);
+      const response = await axios({
+        method: currentDriver ? "put" : "post",
+        url,
+        data: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setMessage(
+        currentDriver
+          ? "Driver updated successfully"
+          : "Driver added successfully"
+      );
+      setMessageType("success");
+      console.log("Success:", response.data);
+
+      // Refresh the data and close the modal on success
+      await handleFetch();
+      setIsModalOpen(false);
     } catch (err) {
-        console.error("Error submitting driver:", err);
-        setMessage(err.response?.data.message || "An error occurred");
-        setMessageType("error");
-    } finally {
-        setIsSubmitting(false);
-    }
-};
+      // Enhanced error handling
+      console.error("Error submitting driver:", err);
 
+      // Handle different error responses
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Error response:", err.response.data);
+
+        // Format the error message based on the structure of the response
+        if (
+          typeof err.response.data === "object" &&
+          err.response.data !== null
+        ) {
+          // Handle error object format from backend
+          const errorMessage = Object.entries(err.response.data)
+            .map(
+              ([key, value]) =>
+                `${key}: ${Array.isArray(value) ? value.join(", ") : value}`
+            )
+            .join("\n");
+          setMessage(errorMessage);
+        } else {
+          setMessage(
+            err.response.data.message ||
+              "An error occurred while submitting the form"
+          );
+        }
+      } else if (err.request) {
+        // The request was made but no response was received
+        console.error("Error request:", err.request);
+        setMessage(
+          "No response received from server. Please check your connection."
+        );
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error message:", err.message);
+        setMessage("Failed to submit the form: " + err.message);
+      }
+
+      setMessageType("error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const renderDownloadDropdown = () => (
     <div className="relative">
@@ -992,13 +1052,22 @@ function Admin_Manage_Drivers() {
       </div>
 
       {renderCharts()}
-      {renderFilterModal()} 
+      {renderFilterModal()}
 
       {/* Modals */}
       {isViewModalOpen && renderDriverDetailsModal()}
+      {/* Modal Form Component - Replace the existing modal form code with this */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center px-4 py-8">
-          <div className="bg-gray-900 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 border border-gray-800 relative">
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center px-4 py-6">
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+            onClick={() => setIsModalOpen(false)}
+          ></div>
+
+          {/* Modal Container - Improved width for larger screens */}
+          <div className="bg-gray-900 rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 border border-gray-800 relative z-10">
+            {/* Header (sticky to stay visible when scrolling) */}
             <div className="sticky top-0 bg-gray-900 z-10 flex justify-between items-center mb-6 pb-2 border-b border-gray-800">
               <h2 className="text-xl font-bold text-blue-500">
                 {currentDriver ? "Update Driver" : "Add New Driver"}
@@ -1011,50 +1080,61 @@ function Admin_Manage_Drivers() {
               </button>
             </div>
 
-            {/* Form Fields */}
+            {/* Error Message Display */}
+            {message && messageType === "error" && (
+              <div className="mb-4 p-3 bg-red-900 border border-red-700 text-red-200 rounded-md">
+                <p className="flex items-center">
+                  <FontAwesomeIcon icon={faTimesCircle} className="mr-2" />
+                  {message}
+                </p>
+              </div>
+            )}
+
+            {/* Form Layout - Responsive grid */}
             <form
-              className="grid md:grid-cols-2 gap-6"
+              className="grid md:grid-cols-2 gap-x-6 gap-y-4"
               onSubmit={handleDriverSubmit}
             >
-              {/* First Column */}
+              {/* === FIRST COLUMN === */}
               <div className="space-y-4">
                 {/* First Name */}
-                <div className="mb-4">
+                <div>
                   <label className="block text-gray-300 mb-2">First Name</label>
                   <input
                     type="text"
                     name="first_name"
                     className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
                     placeholder="Enter first name"
+                    required
                   />
                 </div>
 
                 {/* Last Name */}
-                <div className="mb-4">
+                <div>
                   <label className="block text-gray-300 mb-2">Last Name</label>
                   <input
                     type="text"
                     name="last_name"
                     className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
                     placeholder="Enter last name"
+                    required
                   />
                 </div>
 
-                {/* Gender */}
-                <div className="mb-4">
-                  <label className="block text-gray-300 mb-2">Gender</label>
-                  <select
-                    name="gender"
+                {/* Email */}
+                <div>
+                  <label className="block text-gray-300 mb-2">Email</label>
+                  <input
+                    type="email"
+                    name="email"
                     className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  >
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
+                    placeholder="Enter email address"
+                    required
+                  />
                 </div>
 
                 {/* Phone Number */}
-                <div className="mb-4">
+                <div>
                   <label className="block text-gray-300 mb-2">
                     Phone Number
                   </label>
@@ -1064,37 +1144,30 @@ function Admin_Manage_Drivers() {
                     maxLength={10}
                     className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
                     placeholder="Enter phone number"
+                    required
                   />
                 </div>
 
-                {/* Email */}
-                <div className="mb-4">
-                  <label className="block text-gray-300 mb-2">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                    placeholder="Enter email address"
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-300 mb-2">Availability Status</label>
+                {/* Gender */}
+                <div>
+                  <label className="block text-gray-300 mb-2">Gender</label>
                   <select
-                    name="availability_status"
+                    name="gender"
                     className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                    required
                   >
-                    <option value="active">Active</option>
-                    <option value="inactive">In Active</option>
-            
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
+
               </div>
 
-              {/* Second Column */}
+              {/* === SECOND COLUMN === */}
               <div className="space-y-4">
                 {/* National ID Number */}
-                <div className="mb-4">
+                <div>
                   <label className="block text-gray-300 mb-2">
                     National ID Number
                   </label>
@@ -1108,7 +1181,7 @@ function Admin_Manage_Drivers() {
                 </div>
 
                 {/* Driving License Number */}
-                <div className="mb-4">
+                <div>
                   <label className="block text-gray-300 mb-2">
                     Driving License Number
                   </label>
@@ -1121,12 +1194,40 @@ function Admin_Manage_Drivers() {
                   />
                 </div>
 
+                {/* Status */}
+                <div>
+                  <label className="block text-gray-300 mb-2">Status</label>
+                  <select
+                    name="status"
+                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                    required
+                  >
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+
+                {/* Availability Status */}
+                <div>
+                  <label className="block text-gray-300 mb-2">
+                    Availability Status
+                  </label>
+                  <select
+                    name="availability_status"
+                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                    required
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+
                 {/* Driving Categories */}
-                <div className="mb-4">
+                <div>
                   <label className="block text-gray-300 mb-2">
                     Driving Categories
                   </label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-4 gap-2 p-3 bg-gray-800 border border-gray-700 rounded">
                     {["A", "B", "B1", "C", "D", "D1", "E", "F"].map(
                       (category) => (
                         <label
@@ -1135,7 +1236,7 @@ function Admin_Manage_Drivers() {
                         >
                           <input
                             type="checkbox"
-                            name="drivingCategories" // Add this
+                            name="drivingCategories"
                             value={category}
                             className="form-checkbox h-4 w-4 text-blue-600 bg-gray-800 border-gray-700 rounded"
                           />
@@ -1145,67 +1246,38 @@ function Admin_Manage_Drivers() {
                     )}
                   </div>
                 </div>
-
-                {/* Residence */}
-                <div className="mb-4">
-                  <label className="block text-gray-300 mb-2">Residence</label>
-                  <input
-                    type="text"
-                    name="residence"
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                    placeholder="Enter residence"
-                  />
-                </div>
-
-                {/* Status */}
-                <div className="mb-4">
-                  <label className="block text-gray-300 mb-2">Status</label>
-                  <select
-                    name="status"
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  >
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
-                </div>
-
-                <div className="flex justify-end space-x-2 mt-6">
-                  <button
-                    type="button"
-                    className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`px-4 py-2 text-white rounded ${
-                      isSubmitting
-                        ? "bg-gray-500 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <FontAwesomeIcon
-                          icon={faSpinner}
-                          spin
-                          className="mr-2"
-                        />
-                        {currentDriver ? "Updating..." : "Adding..."}
-                      </>
-                    ) : currentDriver ? (
-                      "Update"
-                    ) : (
-                      "Add"
-                    )}
-                  </button>
-                </div>
-
-
-                
               </div>
 
+              {/* === FORM BUTTONS - Full width for both layouts === */}
+              <div className="md:col-span-2 flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`px-4 py-2 text-white rounded transition ${
+                    isSubmitting
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+                      {currentDriver ? "Updating..." : "Adding..."}
+                    </>
+                  ) : currentDriver ? (
+                    "Update"
+                  ) : (
+                    "Add"
+                  )}
+                </button>
+              </div>
             </form>
           </div>
         </div>
