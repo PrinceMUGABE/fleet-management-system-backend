@@ -10,11 +10,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const MenuLinks = [
   { id: 1, name: "Home", link: "/#home" },
-  { id: 2, name: "Choosing AGS", link: "/#choosing-ags" },
   { id: 3, name: "Our Services", link: "/#services" },
-  { id: 4, name: "Our Network", link: "/#network" },
-  { id: 5, name: "News", link: "/#news" },
-  { id: 6, name: "Contact", link: "/#contact" },
+  { id: 4, name: "About Us", link: "/#network" },
+  { id: 5, name: "Contact", link: "/#contact" },
 ];
 
 const Navbar = () => {
@@ -29,12 +27,12 @@ const Navbar = () => {
       {/* Top Bar */}
       <div className="bg-gray-900 text-white py-2 text-sm flex justify-end px-6 md:px-12">
         <div className="flex items-center gap-4">
-          {/* <a href="#careers" className="text-gray-600 hover:text-red-500">Careers</a>
-          <a href="#payment" className="text-gray-600hover:text-red-500">Payment</a> */}
-          <button onClick={handleLoginClick} className="flex items-center gap-1 hover:text-red-500">
+          {/* <a href="#careers" className="text-gray-600 hover:text-green-500">Careers</a>
+          <a href="#payment" className="text-gray-600hover:text-green-500">Payment</a> */}
+          <button onClick={handleLoginClick} className="flex items-center gap-1 hover:text-green-500">
             <FaUser /> Log in
           </button>
-          {/* <button className="flex items-center gap-1 hover:text-red-500">
+          {/* <button className="flex items-center gap-1 hover:text-green-500">
             <FaGlobe /> English ▼
           </button> */}
         </div>
@@ -46,7 +44,7 @@ const Navbar = () => {
           {/* Logo */}
           <a href="#home" className="flex items-center gap-3">
             <img src={Logo} alt="Logo" className="w-24" />
-            <span className="text-xl font-semibold text-gray-900">AGS Worldwide Movers</span>
+            <span className="text-xl font-semibold text-gray-900">SLMS</span>
           </a>
 
           {/* Desktop Navigation */}
@@ -54,7 +52,7 @@ const Navbar = () => {
             <ul className="flex items-center gap-6">
               {MenuLinks.map(({ id, name, link }) => (
                 <li key={id}>
-                  <a href={link} className="text-lg text-gray-600 font-medium hover:text-red-500 py-2 border-b-2 border-transparent hover:border-red-500 transition-colors">
+                  <a href={link} className="text-lg text-gray-600 font-medium hover:text-green-500 py-2 border-b-2 border-transparent hover:border-red-500 transition-colors">
                     {name}
                   </a>
                 </li>
@@ -62,16 +60,14 @@ const Navbar = () => {
             </ul>
           </nav>
 
-          {/* Get a Quote Button */}
-          <button className="hidden md:block bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition">
-            Get a Quote
-          </button>
+          {/* Get a Quote Button
+          <button className=" flex items-center gap-1 md:block bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition">
+            <FaUser />Login
+          </button> */}
 
           {/* Mobile Menu Toggle */}
-          <div className="md:hidden flex items-center gap-4">
-            <button className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition">
-              Get a Quote
-            </button>
+          <div className="md:hidden text-black flex items-center gap-4">
+  
             {showMenu ? (
               <HiMenuAlt1 onClick={toggleMenu} className="cursor-pointer" size={30} />
             ) : (

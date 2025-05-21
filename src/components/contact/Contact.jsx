@@ -95,14 +95,14 @@ const Contact = () => {
                 
                 <div className='max-w-2xl mx-auto'>
                     <div className="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
-                        <div className="p-6 bg-red-600 text-white">
+                        <div className="p-6 bg-blue-600 text-white">
                             <h3 className="text-xl font-semibold">Get in touch</h3>
                             <p className="text-gray-100 mt-1">Send us a message and we'll contact you shortly</p>
                         </div>
                         
                         <form className='p-6' onSubmit={handleSubmit}>
                             {message && (
-                                <div className={`mb-5 p-3 rounded ${message.includes('success') ? 'bg-green-900 text-green-100' : 'bg-red-900 text-red-100'}`}>
+                                <div className={`mb-5 p-3 rounded ${message.includes('success') ? 'bg-green-900 text-green-100' : 'bg-blue-900 text-blue-100'}`}>
                                     {message}
                                 </div>
                             )}
@@ -122,7 +122,7 @@ const Contact = () => {
                                         className='w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600'
                                     />
                                 </div>
-                                {errors.names && <p className="text-red-400 text-sm mt-1">{errors.names}</p>}
+                                {errors.names && <p className="text-blue-400 text-sm mt-1">{errors.names}</p>}
                             </div>
 
                             <div className="mb-4">
@@ -140,7 +140,7 @@ const Contact = () => {
                                         className='w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600'
                                     />
                                 </div>
-                                {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
+                                {errors.email && <p className="text-blue-400 text-sm mt-1">{errors.email}</p>}
                             </div>
 
                             <div className="mb-4">
@@ -158,7 +158,7 @@ const Contact = () => {
                                         className='w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600'
                                     />
                                 </div>
-                                {errors.subject && <p className="text-red-400 text-sm mt-1">{errors.subject}</p>}
+                                {errors.subject && <p className="text-blue-400 text-sm mt-1">{errors.subject}</p>}
                             </div>
 
                             <div className="mb-5">
@@ -181,7 +181,7 @@ const Contact = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className='w-full p-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 flex items-center justify-center gap-2'
+                                className='w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 flex items-center justify-center gap-2'
                             >
                                 {loading ? (
                                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

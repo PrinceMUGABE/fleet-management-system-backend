@@ -19,7 +19,7 @@ const ResponsiveMenu = ({ showMenu, setShowMenu }) => {
         <ul className="space-y-6 text-lg">
           {MenuLinks.map(({ id, name, link }) => (
             <li key={id}>
-              <a href={link} className="hover:text-red-500" onClick={handleLinkClick}>
+              <a href={link} className="hover:text-green-500" onClick={handleLinkClick}>
                 {name}
               </a>
             </li>
@@ -30,10 +30,10 @@ const ResponsiveMenu = ({ showMenu, setShowMenu }) => {
       {/* Footer Section */}
       <div className="mt-auto pb-6">
         <div className="flex flex-col space-y-4">
-          <button className="flex items-center gap-2 hover:text-red-500">
+          <button className="flex items-center gap-2 hover:text-green-500">
             <FaUser /> Log in
           </button>
-          {/* <button className="flex items-center gap-2 hover:text-red-500">
+          {/* <button className="flex items-center gap-2 hover:text-green-500">
             <FaGlobe /> English ▼
           </button> */}
         </div>

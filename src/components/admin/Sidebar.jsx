@@ -39,9 +39,9 @@ function Sidebar() {
     { id: 2, name: "Users", path: "/admin/users", icon: <MdPeople className="text-xl" /> },
     { id: 3, name: "Vehicles", path: "/admin/vehicles", icon: <MdDirectionsCar className="text-xl" /> },
     { id: 4, name: "Drivers", path: "/admin/drivers", icon: <MdPersonPin className="text-xl" /> },
-    { id: 5, name: "Man Powers", path: "/admin/man_powers", icon: <MdPersonPin className="text-xl" /> },
-    { id: 6, name: "Relocations", path: "/admin/relocations", icon: <MdCompareArrows className="text-xl" /> },
-    { id: 7, name: "Forecast", path: "/admin/forecasts", icon: <MdInsights className="text-xl" /> },
+    // { id: 5, name: "Man Powers", path: "/admin/man_powers", icon: <MdPersonPin className="text-xl" /> },
+    { id: 6, name: "Orders", path: "/admin/relocations", icon: <MdCompareArrows className="text-xl" /> },
+    // { id: 7, name: "Forecast", path: "/admin/forecasts", icon: <MdInsights className="text-xl" /> },
     { id: 8, name: "Feedbacks", path: "/admin/feedbacks", icon: <MdFeedback className="text-xl" /> },
     { id: 9, name: "Profile", path: `/admin/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
   ];
@@ -80,10 +80,10 @@ function Sidebar() {
                   : "text-gray-300 hover:text-white hover:bg-gray-700/50"
               }`}
             >
-              <span className={`${isActiveLink(link.path) ? "text-red-400" : ""}`}>{link.icon}</span>
+              <span className={`${isActiveLink(link.path) ? "text-blue-400" : ""}`}>{link.icon}</span>
               <span>{link.name}</span>
               {isActiveLink(link.path) && (
-                <span className="ml-auto w-1.5 h-6 rounded-full bg-red-400"></span>
+                <span className="ml-auto w-1.5 h-6 rounded-full bg-blue-400"></span>
               )}
             </Link>
           ))}
@@ -94,7 +94,7 @@ function Sidebar() {
             onClick={handleLogout}
             className="text-gray-300 hover:text-white flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700/50 transition-all duration-200 w-full text-left group"
           >
-            <FaSignOutAlt className="text-xl group-hover:text-red-400" />
+            <FaSignOutAlt className="text-xl group-hover:text-blue-400" />
             <span>Logout</span>
           </button>
         </div>
@@ -130,10 +130,10 @@ function Sidebar() {
                 }`}
                 onClick={() => setIsMobileSidebarOpen(false)}
               >
-                <span className={`${isActiveLink(link.path) ? "text-red-400" : ""}`}>{link.icon}</span>
+                <span className={`${isActiveLink(link.path) ? "text-blue-400" : ""}`}>{link.icon}</span>
                 <span>{link.name}</span>
                 {isActiveLink(link.path) && (
-                  <span className="ml-auto w-1.5 h-6 rounded-full bg-red-400"></span>
+                  <span className="ml-auto w-1.5 h-6 rounded-full bg-blue-400"></span>
                 )}
               </Link>
             ))}
@@ -147,7 +147,7 @@ function Sidebar() {
               }}
               className="text-gray-300 hover:text-white flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700/50 transition-all duration-200 w-full text-left group"
             >
-              <FaSignOutAlt className="text-xl group-hover:text-red-400" />
+              <FaSignOutAlt className="text-xl group-hover:text-blue-400" />
               <span>Logout</span>
             </button>
           </div>

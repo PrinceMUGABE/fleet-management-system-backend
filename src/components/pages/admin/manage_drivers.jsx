@@ -61,11 +61,11 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-4 text-red-100 bg-red-900 rounded-lg">
+        <div className="p-4 text-blue-100 bg-blue-900 rounded-lg">
           <h3 className="font-semibold">Something went wrong</h3>
           <button
             onClick={() => window.location.reload()}
-            className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Refresh Page
           </button>
@@ -221,27 +221,13 @@ function Admin_Manage_Drivers() {
   );
 
 
-  const handleViewDocument = (documentType) => {
-    if (!selectedDriver) return;
-    
-    let documentUrl = '';
-    if (documentType === 'national_id_card' && selectedDriver.national_id_card) {
-      documentUrl = selectedDriver.national_id_card;
-    } else if (documentType === 'driving_license' && selectedDriver.driving_license) {
-      documentUrl = selectedDriver.driving_license;
-    }
-    
-    if (documentUrl) {
-      window.open(documentUrl, '_blank');
-    }
-  };
 
   const renderDriverDetailsModal = () =>
     selectedDriver && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white rounded-lg w-full max-w-lg p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-red-800">Driver Details</h2>
+            <h2 className="text-xl font-bold text-blue-800">Driver Details</h2>
             <button
               onClick={() => setIsViewModalOpen(false)}
               className="text-gray-600 hover:text-gray-900"
@@ -251,61 +237,38 @@ function Admin_Manage_Drivers() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="font-semibold text-red-800">Full Name</p>
+              <p className="font-semibold text-blue-800">Full Name</p>
               <p className="font-medium text-gray-800">
                 {selectedDriver.first_name} {selectedDriver.last_name}
               </p>
             </div>
             <div>
-              <p className="font-semibold text-red-800">Gender</p>
+              <p className="font-semibold text-blue-800">Gender</p>
               <p className="capitalize text-gray-800">{selectedDriver.gender}</p>
             </div>
             <div>
-              <p className="font-semibold text-red-800">Phone Number</p>
+              <p className="font-semibold text-blue-800">Phone Number</p>
               <p className="text-gray-800">{selectedDriver.phone_number}</p>
             </div>
             <div>
-              <p className="font-semibold text-red-800">Email</p>
+              <p className="font-semibold text-blue-800">Email</p>
               <p className="text-gray-800">{selectedDriver.email}</p>
             </div>
             <div>
-              <p className="font-semibold text-red-800">Driving Categories</p>
+              <p className="font-semibold text-blue-800">Driving Categories</p>
               <p className="text-gray-800 capitalize">{selectedDriver.driving_categories.join(", ")}</p>
             </div>
             <div>
-              <p className="font-semibold text-red-800">Status</p>
+              <p className="font-semibold text-blue-800">Status</p>
               <p className="uppercase text-gray-800">{selectedDriver.status}</p>
             </div>
             <div>
-              <p className="font-semibold text-red-800">Resident</p>
+              <p className="font-semibold text-blue-800">Resident</p>
               <p className="uppercase text-gray-800">{selectedDriver.residence}</p>
             </div>
             <div>
-              <p className="font-semibold text-red-800">Availability Status</p>
+              <p className="font-semibold text-blue-800">Availability Status</p>
               <p className="uppercase text-gray-800">{selectedDriver.availability_status}</p>
-            </div>
-          </div>
-          
-          {/* Document Viewer Buttons */}
-          <div className="mt-6 border-t border-gray-200 pt-4">
-            <h3 className="font-semibold text-red-800 mb-3">Driver Documents</h3>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => handleViewDocument('national_id_card')}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
-                disabled={!selectedDriver.national_id_card}
-              >
-                <FontAwesomeIcon icon={faIdCard} className="mr-2" />
-                View National ID
-              </button>
-              <button
-                onClick={() => handleViewDocument('driving_license')}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center"
-                disabled={!selectedDriver.driving_license}
-              >
-                <FontAwesomeIcon icon={faIdBadge} className="mr-2" />
-                View License
-              </button>
             </div>
           </div>
         </div>
@@ -343,7 +306,7 @@ function Admin_Manage_Drivers() {
                   className={`px-2 py-1 rounded-full text-xs font-semibold ${
                     driver.status === "approved"
                       ? "bg-green-900 text-green-400"
-                      : "bg-red-900 text-red-400"
+                      : "bg-blue-900 text-blue-400"
                   }`}
                 >
                   {driver.status.toUpperCase()}
@@ -354,7 +317,7 @@ function Admin_Manage_Drivers() {
                   className={`px-2 py-1 rounded-full text-xs font-semibold ${
                     driver.availability_status === "active"
                       ? "bg-green-900 text-green-400"
-                      : "bg-red-900 text-red-400"
+                      : "bg-blue-900 text-blue-400"
                   }`}
                 >
                   {driver.availability_status.toUpperCase()}
@@ -378,7 +341,7 @@ function Admin_Manage_Drivers() {
                 </button>
                 <button
                   onClick={() => handleDelete(driver.id)}
-                  className="text-red-500 hover:text-red-700"
+                  className="text-blue-500 hover:text-blue-700"
                 >
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
@@ -553,14 +516,14 @@ function Admin_Manage_Drivers() {
             className={`mr-2 ${
               driver.availability_status === "active"
                 ? "text-green-500"
-                : "text-red-500"
+                : "text-blue-500"
             }`}
           />
           <span
             className={`font-semibold ${
               driver.availability_status === "active"
                 ? "text-green-500"
-                : "text-red-500"
+                : "text-blue-500"
             }`}
           >
             {driver.availability_status.toUpperCase()}
@@ -570,7 +533,7 @@ function Admin_Manage_Drivers() {
           className={`px-3 py-1 rounded-full text-sm ${
             driver.status === "approved"
               ? "bg-green-600 text-white"
-              : "bg-red-600 text-white"
+              : "bg-blue-600 text-white"
           }`}
         >
           {driver.status.toUpperCase()}
@@ -613,7 +576,7 @@ function Admin_Manage_Drivers() {
         </button>
         <button
           onClick={() => handleDelete(driver.id)}
-          className="w-1/2 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+          className="w-1/2 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
         >
           <FontAwesomeIcon icon={faTrash} className="mr-2" />
           Delete
@@ -636,7 +599,7 @@ function Admin_Manage_Drivers() {
         onClick={() => setIsFilterModalOpen(false)}
       ></div>
       <div className="bg-gray-900 rounded-lg shadow-xl p-6 z-50 w-[500px] border border-gray-800">
-        <h2 className="text-xl font-bold mb-4 text-red-500">
+        <h2 className="text-xl font-bold mb-4 text-blue-500">
           Advanced Filters
         </h2>
         <div className="space-y-4">
@@ -695,7 +658,7 @@ function Admin_Manage_Drivers() {
                         drivingCategories: updatedCategories,
                       });
                     }}
-                    className="form-checkbox h-4 w-4 text-red-600 bg-gray-800 border-gray-700 rounded"
+                    className="form-checkbox h-4 w-4 text-blue-600 bg-gray-800 border-gray-700 rounded"
                   />
                   <span className="ml-2 text-gray-300">{category}</span>
                 </label>
@@ -749,7 +712,7 @@ function Admin_Manage_Drivers() {
           </button>
           <button
             onClick={() => setIsFilterModalOpen(false)}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             Apply
           </button>
@@ -772,9 +735,6 @@ function Admin_Manage_Drivers() {
         form.elements.gender.value = driver.gender;
         form.elements.phone_number.value = driver.phone_number;
         form.elements.email.value = driver.email;
-        form.elements.national_id_number.value = driver.national_id_number;
-        form.elements.driving_license_number.value =
-        driver.driving_license_number;
         form.elements.residence.value = driver.residence;
         form.elements.status.value = driver.status;
         form.elements.availability_status.value = driver.availability_status;
@@ -911,7 +871,7 @@ function Admin_Manage_Drivers() {
         
         const fields = [
             "first_name", "last_name", "gender", "phone_number", "email", 
-            "national_id_number", "driving_license_number", "residence", "status", "availability_status"
+           "residence", "status", "availability_status"
         ];
 
         // Directly use the form's current values
@@ -924,15 +884,6 @@ function Admin_Manage_Drivers() {
             .map((checkbox) => checkbox.value);
         formData.append("driving_categories", selectedCategories);
 
-        const nationalIdFile = form.elements.nationalIdUpload.files[0];
-        const drivingLicenseFile = form.elements.drivingLicenseUpload.files[0];
-
-        if (nationalIdFile) {
-            formData.append("national_id_card", nationalIdFile);
-        }
-        if (drivingLicenseFile) {
-            formData.append("driving_license", drivingLicenseFile);
-        }
 
         const token = localStorage.getItem("token");
         const url = currentDriver 
@@ -1013,7 +964,7 @@ function Admin_Manage_Drivers() {
 
       <div className="bg-gray-900 shadow-md rounded-lg p-6 mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-red-500">
+          <h2 className="text-xl font-semibold text-blue-500">
             Drivers Management
           </h2>
           <div className="flex space-x-4">
@@ -1030,7 +981,7 @@ function Admin_Manage_Drivers() {
                 setCurrentDriver(null);
                 setIsModalOpen(true);
               }}
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
             >
               Add Driver
             </button>
@@ -1049,7 +1000,7 @@ function Admin_Manage_Drivers() {
         <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center px-4 py-8">
           <div className="bg-gray-900 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 border border-gray-800 relative">
             <div className="sticky top-0 bg-gray-900 z-10 flex justify-between items-center mb-6 pb-2 border-b border-gray-800">
-              <h2 className="text-xl font-bold text-red-500">
+              <h2 className="text-xl font-bold text-blue-500">
                 {currentDriver ? "Update Driver" : "Add New Driver"}
               </h2>
               <button
@@ -1126,6 +1077,18 @@ function Admin_Manage_Drivers() {
                     placeholder="Enter email address"
                   />
                 </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-300 mb-2">Availability Status</label>
+                  <select
+                    name="availability_status"
+                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">In Active</option>
+            
+                  </select>
+                </div>
               </div>
 
               {/* Second Column */}
@@ -1174,7 +1137,7 @@ function Admin_Manage_Drivers() {
                             type="checkbox"
                             name="drivingCategories" // Add this
                             value={category}
-                            className="form-checkbox h-4 w-4 text-red-600 bg-gray-800 border-gray-700 rounded"
+                            className="form-checkbox h-4 w-4 text-blue-600 bg-gray-800 border-gray-700 rounded"
                           />
                           <span className="ml-2 text-gray-300">{category}</span>
                         </label>
@@ -1206,67 +1169,6 @@ function Admin_Manage_Drivers() {
                   </select>
                 </div>
 
-
-                <div className="mb-4">
-                  <label className="block text-gray-300 mb-2">Availability Status</label>
-                  <select
-                    name="availability_status"
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">In Active</option>
-            
-                  </select>
-                </div>
-              </div>
-
-              {/* File Uploads (Span Both Columns) */}
-              <div className="md:col-span-2 space-y-4">
-                {/* National ID Card Upload */}
-                <div className="mb-4">
-                  <label className="block text-gray-300 mb-2">
-                    National ID Card
-                  </label>
-                  <div className="flex items-center">
-                    <input
-                      type="file"
-                      name="nationalIdUpload"
-                      className="hidden"
-                      id="national-id-upload"
-                    />
-                    <label
-                      htmlFor="national-id-upload"
-                      className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300 flex items-center cursor-pointer"
-                    >
-                      <FontAwesomeIcon icon={faUpload} className="mr-2" />
-                      Upload National ID
-                    </label>
-                  </div>
-                </div>
-
-                {/* Driving License Upload */}
-                <div className="mb-4">
-                  <label className="block text-gray-300 mb-2">
-                    Driving License
-                  </label>
-                  <div className="flex items-center">
-                    <input
-                      type="file"
-                      name="drivingLicenseUpload"
-                      className="hidden"
-                      id="driving-license-upload"
-                    />
-                    <label
-                      htmlFor="driving-license-upload"
-                      className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300 flex items-center cursor-pointer"
-                    >
-                      <FontAwesomeIcon icon={faUpload} className="mr-2" />
-                      Upload Driving License
-                    </label>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
                 <div className="flex justify-end space-x-2 mt-6">
                   <button
                     type="button"
@@ -1280,7 +1182,7 @@ function Admin_Manage_Drivers() {
                     className={`px-4 py-2 text-white rounded ${
                       isSubmitting
                         ? "bg-gray-500 cursor-not-allowed"
-                        : "bg-red-600 hover:bg-red-700"
+                        : "bg-blue-600 hover:bg-blue-700"
                     }`}
                   >
                     {isSubmitting ? (
@@ -1299,7 +1201,11 @@ function Admin_Manage_Drivers() {
                     )}
                   </button>
                 </div>
+
+
+                
               </div>
+
             </form>
           </div>
         </div>

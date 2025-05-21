@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, CheckCircle, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
-import loginImage from "../../assets/pictures/driving3.jpg";
+import loginImage from "../../assets/pictures/logo.png";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -18,6 +18,16 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordValidation, setPasswordValidation] = useState({
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasDigit: false,
+    hasSpecialChar: false,
+    isValidLength: false
+  });
+  const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+  const [passwordsMatchState, setPasswordsMatchState] = useState(false);
+  const [showPasswordMatchFeedback, setShowPasswordMatchFeedback] = useState(false);
 
   const getCsrfToken = () => {
     let csrfToken = null;
@@ -43,11 +53,56 @@ const ResetPassword = () => {
     const hasLowercase = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);
 
-    return password.length >= minLength && hasSpecialChar && hasUppercase && hasLowercase && hasNumber;
+    return {
+      isValid: password.length >= minLength && hasSpecialChar && hasUppercase && hasLowercase && hasNumber,
+      hasUpperCase: hasUppercase,
+      hasLowerCase: hasLowercase,
+      hasDigit: hasNumber,
+      hasSpecialChar: hasSpecialChar,
+      isValidLength: password.length >= minLength
+    };
   };
 
   const passwordsMatch = () => {
     return formData.new_password === formData.confirm_password;
+  };
+
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    
+    if (name === 'new_password') {
+      const validation = validatePassword(value);
+      setPasswordValidation({
+        hasUpperCase: validation.hasUpperCase,
+        hasLowerCase: validation.hasLowerCase,
+        hasDigit: validation.hasDigit,
+        hasSpecialChar: validation.hasSpecialChar,
+        isValidLength: validation.isValidLength
+      });
+
+      // Show validation feedback once user starts typing
+      if (value.length > 0) {
+        setShowPasswordValidation(true);
+      } else {
+        setShowPasswordValidation(false);
+      }
+
+      // Check if passwords match when new password changes
+      if (formData.confirm_password) {
+        setPasswordsMatchState(value === formData.confirm_password);
+        setShowPasswordMatchFeedback(true);
+      }
+    }
+    
+    if (name === 'confirm_password') {
+      if (value) {
+        setPasswordsMatchState(formData.new_password === value);
+        setShowPasswordMatchFeedback(true);
+      } else {
+        setShowPasswordMatchFeedback(false);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -62,7 +117,8 @@ const ResetPassword = () => {
       return;
     }
 
-    if (!validatePassword(formData.new_password)) {
+    const passwordValidationResult = validatePassword(formData.new_password);
+    if (!passwordValidationResult.isValid) {
       setIsLoading(false);
       setError('Password must be at least 5 characters long, contain a special character, an uppercase letter, a lowercase letter, and a number.');
       return;
@@ -129,7 +185,7 @@ const ResetPassword = () => {
         style={{ backgroundImage: `url(${loginImage})` }}
       ></div>
       
-      <div className="container mx-auto max-w-md z-10">
+      <div className="container mx-auto max-w-md md:max-w-lg lg:max-w-xl z-10">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">
             Reset Your Password
@@ -140,14 +196,14 @@ const ResetPassword = () => {
         </div>
 
         <div className="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
-          <div className="p-6 bg-red-600 text-white">
+          <div className="p-6 bg-blue-600 text-white">
             <h3 className="text-xl font-semibold">Password Recovery</h3>
             <p className="text-gray-100 mt-1">We'll send a confirmation to your email</p>
           </div>
 
           <form className="p-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="mb-5 p-3 rounded bg-red-900 text-red-100">
+              <div className="mb-5 p-3 rounded bg-blue-900 text-red-600">
                 {error}
               </div>
             )}
@@ -193,7 +249,7 @@ const ResetPassword = () => {
                   name="new_password"
                   type={showNewPassword ? "text" : "password"}
                   value={formData.new_password}
-                  onChange={handleChange}
+                  onChange={handlePasswordChange}
                   placeholder="Create a new password"
                   className="w-full p-3 pl-10 pr-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                   required
@@ -209,9 +265,25 @@ const ResetPassword = () => {
                   )}
                 </div>
               </div>
-              <p className="mt-1 text-xs text-gray-400">
-                Must contain at least one uppercase letter, lowercase letter, number, and special character.
-              </p>
+              {showPasswordValidation && (
+                <div className="mt-2 text-sm">
+                  <p className={passwordValidation.isValidLength ? "text-green-400" : "text-red-400"}>
+                    ✓ At least 5 characters long
+                  </p>
+                  <p className={passwordValidation.hasUpperCase ? "text-green-400" : "text-red-400"}>
+                    ✓ At least one uppercase letter
+                  </p>
+                  <p className={passwordValidation.hasLowerCase ? "text-green-400" : "text-red-400"}>
+                    ✓ At least one lowercase letter
+                  </p>
+                  <p className={passwordValidation.hasDigit ? "text-green-400" : "text-red-400"}>
+                    ✓ At least one number
+                  </p>
+                  <p className={passwordValidation.hasSpecialChar ? "text-green-400" : "text-red-400"}>
+                    ✓ At least one special character (!@#$%^&amp;*(),.?&quot;:&#123;&#125;|&lt;&gt;)
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="mb-5">
@@ -227,7 +299,7 @@ const ResetPassword = () => {
                   name="confirm_password"
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirm_password}
-                  onChange={handleChange}
+                  onChange={handlePasswordChange}
                   placeholder="Confirm your new password"
                   className="w-full p-3 pl-10 pr-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                   required
@@ -243,11 +315,18 @@ const ResetPassword = () => {
                   )}
                 </div>
               </div>
+              {showPasswordMatchFeedback && (
+                <div className="mt-2 text-sm">
+                  <p className={passwordsMatchState ? "text-green-400" : "text-red-400"}>
+                    {passwordsMatchState ? "✓ Passwords match" : "✗ Passwords do not match"}
+                  </p>
+                </div>
+              )}
             </div>
 
             <button
               type="submit"
-              className="w-full p-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
+              className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
               disabled={isLoading}
             >
               {isLoading ? (

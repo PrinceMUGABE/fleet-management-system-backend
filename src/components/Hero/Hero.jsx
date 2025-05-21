@@ -1,133 +1,154 @@
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from "react";
-import hero from "../../assets/pictures/drivering1.png";
-import image2 from "../../assets/pictures/driving2.jpg";
-import image3 from "../../assets/pictures/driving3.jpg";
+import hero from "../../assets/pictures/car0.jpg";
+import image2 from "../../assets/pictures/package2.jpeg";
+import image3 from "../../assets/pictures/cars1.jpg";
+import image4 from "../../assets/pictures/car1.jpg";
+import image5 from "../../assets/pictures/package1.png";
+import image6 from "../../assets/pictures/package3.jpg";
 
 const Hero = () => {
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [activeContentIndex, setActiveContentIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   
-  const images = [hero, image2, image3];
-  
-  const contentSlides = [
+  // Updated content for SLMS
+  const slides = [
     {
-      title: "Route Optimization with Real-Time Analysis",
-      description: "Our Relocation Optimization and Prediction System analyzes historical and real-time traffic data to optimize routes for movers, reducing travel time and fuel costs while dynamically adjusting to road conditions."
+      image: hero,
+      title: "Real-Time Fleet Tracking",
+      description: "Monitor your entire fleet with live GPS tracking, route history, and geofencing alerts for complete logistics control.",
+      button1: "VIEW LIVE MAP",
+      button2: "REQUEST DEMO"
+    },
+     {
+      image: image4,
+      title: "Smart Inventory Management",
+      description: "Automated warehouse tracking with IoT sensors and barcode scanning for seamless inventory control across your supply chain.",
+      button1: "EXPLORE FEATURES",
+      button2: "CONTACT SALES"
     },
     {
-      title: "Predictive Analytics for Smart Planning",
-      description: "Leverage our advanced analytics to predict seasonal demand patterns and analyze customer behaviors, allowing for more efficient resource allocation and improved service delivery for your relocation needs."
+      image: image2,
+      title: "Automated Route Optimization",
+      description: "Our AI-powered system calculates the most efficient routes considering traffic, weather, and delivery windows to reduce costs by up to 30%.",
+      button1: "SEE ANALYTICS",
+      button2: "GET STARTED"
     },
     {
-      title: "Data-Driven Customer Experience",
-      description: "Benefit from personalized service recommendations based on your preferences and needs. Our system continuously analyzes feedback to enhance your relocation experience and ensure maximum satisfaction."
+      image: image3,
+      title: "Smart Inventory Management",
+      description: "Automated warehouse tracking with IoT sensors and barcode scanning for seamless inventory control across your supply chain.",
+      button1: "EXPLORE FEATURES",
+      button2: "CONTACT SALES"
+    },
+     {
+      image: image5,
+      title: "Smart Inventory Management",
+      description: "Automated warehouse tracking with IoT sensors and barcode scanning for seamless inventory control across your supply chain.",
+      button1: "EXPLORE FEATURES",
+      button2: "CONTACT SALES"
     }
   ];
 
   useEffect(() => {
-    const imageInterval = setInterval(() => {
-      setActiveImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % slides.length);
     }, 5000);
-    
-    const contentInterval = setInterval(() => {
-      setActiveContentIndex((prevIndex) => (prevIndex + 1) % contentSlides.length);
-    }, 3000);
-    
-    return () => {
-      clearInterval(imageInterval);
-      clearInterval(contentInterval);
-    };
-  }, [images.length, contentSlides.length]);
-
-  const handleGetQuote = () => {
-    window.location.href = "/quote";
-  };
+    return () => clearInterval(interval);
+  }, [slides.length]);
 
   return (
-    <div className="bg-white relative overflow-hidden pt-40">
-      {/* Main content container */}
-      <div className="relative z-20 flex flex-col md:flex-row">
-        {/* Left side - Image slider */}
-        <div className="w-full md:w-1/2 h-[400px] md:h-[500px] relative overflow-hidden">
-          {images.map((img, index) => (
-            <div 
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                activeImageIndex === index ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <img 
-                src={img} 
-                alt={`Slide ${index + 1}`} 
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
-        </div>
-        
-        {/* Right side - Content slider */}
-        <div className="w-full md:w-1/2 bg-gray-900 text-white p-4 flex flex-col justify-center relative z-20 min-h-[400px]">
-          {contentSlides.map((slide, index) => (
-            <div 
-              key={index}
-              className={`transition-opacity duration-1000 absolute inset-0 p-8 flex flex-col justify-center ${
-                activeContentIndex === index ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
-            >
-              <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-                {slide.title}
-              </h2>
-              <p className="text-sm md:text-base mb-6">
-                {slide.description}
-              </p>
-              <div className="flex gap-4">
-                <button className="border border-white text-white py-2 px-4 rounded hover:bg-white hover:text-gray-900 transition">
-                  VIEW DASHBOARD
-                </button>
-                <button 
-                  onClick={handleGetQuote}
-                  className="bg-white text-gray-900 py-2 px-4 rounded hover:bg-gray-200 transition"
-                >
-                  GET RELOCATION ESTIMATE
-                </button>
-              </div>
-            </div>
-          ))}
-          
-          {/* Dots navigation */}
-          <div className="flex justify-center mt-auto gap-2 relative z-30">
-            {contentSlides.map((_, index) => (
-              <button
+    <div className="relative bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+      {/* Main Hero Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          {/* Image Slider */}
+          <div className="relative h-80 md:h-96 rounded-xl overflow-hidden shadow-xl">
+            {slides.map((slide, index) => (
+              <div
                 key={index}
-                onClick={() => setActiveContentIndex(index)}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  activeContentIndex === index ? "bg-white" : "bg-gray-500"
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                  activeIndex === index ? "opacity-100" : "opacity-0"
                 }`}
-              ></button>
+              >
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              </div>
             ))}
+          </div>
+
+          {/* Content Slider */}
+          <div className="relative h-80 md:h-96">
+            {slides.map((slide, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-1000 flex flex-col justify-center ${
+                  activeIndex === index ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                  {slide.title}
+                </h2>
+                <p className="text-lg text-gray-600 mb-6">
+                  {slide.description}
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all shadow-md hover:shadow-lg">
+                    {slide.button1}
+                  </button>
+                  <button className="px-6 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all">
+                    {slide.button2}
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {/* Navigation Dots */}
+            <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-2">
+              {slides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    activeIndex === index ? "bg-blue-600 w-6" : "bg-gray-300"
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
-      
-      {/* Bottom section with company information */}
-      <div className="text-center py-8 px-4 max-w-4xl mx-auto pt-8">
-        <h3 className="text-2xl font-bold text-red-700">
-          RELOCATION OPTIMIZATION AND PREDICTION SYSTEM
-        </h3>
-        <p className="text-gray-700 mt-4">
-          "Revolutionizing the relocation industry through intelligent data analytics and predictive algorithms that enhance operational efficiency and customer satisfaction"
-        </p>
-        <p className="text-gray-700 mt-2">
-          "We provide <span className="text-red-700">data-driven relocation solutions</span> and <span className="text-red-700">resource optimization</span>."
-        </p>
-        <p className="text-red-700 font-semibold mt-4 flex items-center justify-center">
-          <span className="text-4xl mr-2">"</span>
-          Making informed decisions for efficient relocations nationwide
-          <span className="text-4xl ml-2">"</span>
-        </p>
-      </div>
+
+      {/* Branding Section */}
+      {/* <div className="bg-white py-12">
+        <div className="max-w-4xl mx-auto text-center px-4">
+          <h3 className="text-3xl font-bold text-gray-900 mb-6">
+            SMART LOGISTICS MANAGEMENT SYSTEM
+          </h3>
+          <p className="text-xl text-gray-600 mb-6">
+            "Transforming logistics operations through IoT, AI, and real-time data analytics for unprecedented efficiency"
+          </p>
+          <div className="flex flex-wrap justify-center gap-8 mt-8">
+            <div className="bg-blue-50 px-6 py-4 rounded-lg">
+              <p className="font-semibold text-blue-700">Fleet Tracking</p>
+            </div>
+            <div className="bg-blue-50 px-6 py-4 rounded-lg">
+              <p className="font-semibold text-blue-700">Route Optimization</p>
+            </div>
+            <div className="bg-blue-50 px-6 py-4 rounded-lg">
+              <p className="font-semibold text-blue-700">Inventory Control</p>
+            </div>
+            <div className="bg-blue-50 px-6 py-4 rounded-lg">
+              <p className="font-semibold text-blue-700">Data Analytics</p>
+            </div>
+          </div>
+        </div>
+      </div> */}
     </div>
   );
 };

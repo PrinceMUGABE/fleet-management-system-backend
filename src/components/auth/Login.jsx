@@ -2,9 +2,9 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Phone, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Phone, Lock, Eye, EyeOff, ArrowLeft, Mail } from "lucide-react";
 import axios from "axios";
-import loginImage from "../../assets/pictures/driving2.jpg";
+import loginImage from "../../assets/pictures/logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,6 +12,14 @@ const Login = () => {
   const [identifier, setIdentifier] = useState("");  // Use identifier for both phone and email
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [passwordValidation, setPasswordValidation] = useState({
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasDigit: false,
+    hasSpecialChar: false,
+    isValidLength: false
+  });
+  const [showPasswordValidation, setShowPasswordValidation] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isPhoneLogin, setIsPhoneLogin] = useState(true);  // State to toggle between phone or email login
@@ -26,6 +34,25 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    const validation = validatePassword(newPassword);
+    setPasswordValidation({
+      hasUpperCase: validation.hasUpperCase,
+      hasLowerCase: validation.hasLowerCase,
+      hasDigit: validation.hasDigit,
+      hasSpecialChar: validation.hasSpecialChar,
+      isValidLength: validation.isValidLength
+    });
+    // Show validation feedback once user starts typing
+    if (newPassword.length > 0) {
+      setShowPasswordValidation(true);
+    } else {
+      setShowPasswordValidation(false);
+    }
+  };
+
   const validatePassword = (password) => {
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
@@ -33,13 +60,14 @@ const Login = () => {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
     const isValidLength = password.length >= 8;
 
-    return (
-      hasUpperCase &&
-      hasLowerCase &&
-      hasDigit &&
-      hasSpecialChar &&
+    return {
+      isValid: hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar && isValidLength,
+      hasUpperCase,
+      hasLowerCase,
+      hasDigit,
+      hasSpecialChar,
       isValidLength
-    );
+    };
   };
 
   const handleIdentifierChange = (e) => {
@@ -70,7 +98,8 @@ const Login = () => {
       return;
     }
 
-    if (!validatePassword(password)) {
+    const passwordValidationResult = validatePassword(password);
+    if (!passwordValidationResult.isValid) {
       setError("Password must be at least 8 characters long, and include at least one uppercase letter, one lowercase letter, one digit, and one special character.");
       return;
     }
@@ -132,7 +161,7 @@ const Login = () => {
         style={{ backgroundImage: `url(${loginImage})` }}
       ></div>
 
-      <div className="container mx-auto max-w-md z-10">
+      <div className="container mx-auto max-w-md md:max-w-lg lg:max-w-xl z-10">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">
             Welcome Back
@@ -143,32 +172,51 @@ const Login = () => {
         </div>
 
         <div className="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
-          <div className="p-6 bg-red-600 text-white">
+          <div className="p-6 bg-blue-600 text-white">
             <h3 className="text-xl font-semibold">Account Login</h3>
             <p className="text-gray-100 mt-1">Enter your credentials to continue</p>
           </div>
 
           <form className="p-6" onSubmit={handleLogin}>
             {error && (
-              <div className="mb-5 p-3 rounded bg-red-900 text-red-100">
+              <div className="mb-5 p-3 rounded bg-blue-900 text-red-100">
                 {error}
               </div>
             )}
-
+            {showPasswordValidation && (
+              <div className="mt-2 text-sm">
+                <p className={passwordValidation.isValidLength ? "text-green-400" : "text-red-400"}>
+                  ✓ At least 8 characters long
+                </p>
+                <p className={passwordValidation.hasUpperCase ? "text-green-400" : "text-red-400"}>
+                  ✓ At least one uppercase letter
+                </p>
+                <p className={passwordValidation.hasLowerCase ? "text-green-400" : "text-red-400"}>
+                  ✓ At least one lowercase letter
+                </p>
+                <p className={passwordValidation.hasDigit ? "text-green-400" : "text-red-400"}>
+                  ✓ At least one number
+                </p>
+                <p className={passwordValidation.hasSpecialChar ? "text-green-400" : "text-red-400"}>
+                  ✓ At least one special character (!@#$%^&amp;*(),.?&quot;:&#123;&#125;|&lt;&gt;)
+                </p>
+              </div>
+            )}
+            
             {/* Toggle between Phone and Email */}
             <div className="mb-4 flex justify-between items-center">
               <label className="block text-gray-300 mb-2 font-medium">Login with</label>
               <div className="flex gap-4">
                 <button
                   type="button"
-                  className={`px-4 py-2 rounded-md ${isPhoneLogin ? "bg-red-600" : "bg-gray-700"}`}
+                  className={`px-4 py-2 rounded-md ${isPhoneLogin ? "bg-blue-600" : "bg-gray-700"}`}
                   onClick={() => setIsPhoneLogin(true)}
                 >
                   Phone
                 </button>
                 <button
                   type="button"
-                  className={`px-4 py-2 rounded-md ${!isPhoneLogin ? "bg-red-600" : "bg-gray-700"}`}
+                  className={`px-4 py-2 rounded-md ${!isPhoneLogin ? "bg-blue-600" : "bg-gray-700"}`}
                   onClick={() => setIsPhoneLogin(false)}
                 >
                   Email
@@ -177,13 +225,18 @@ const Login = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-gray-300 mb-2 font-medium">Identifier</label>
+              <label className="block text-gray-300 mb-2 font-medium">
+                {isPhoneLogin ? "Phone Number" : "Email Address"}
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  {isPhoneLogin ? <Phone className="h-5 w-5 text-gray-400" /> : null}
+                  {isPhoneLogin ? 
+                    <Phone className="h-5 w-5 text-gray-400" /> : 
+                    <Mail className="h-5 w-5 text-gray-400" />
+                  }
                 </div>
                 <input
-                  type="text"
+                  type={isPhoneLogin ? "tel" : "email"}
                   id="identifier"
                   name="identifier"
                   value={identifier}
@@ -200,7 +253,7 @@ const Login = () => {
                 <label className="block text-gray-300 font-medium">Password</label>
                 <Link
                   to="/passwordreset"
-                  className="text-sm text-red-400 hover:text-red-300"
+                  className="text-sm text-blue-400 hover:text-blue-300"
                 >
                   Forgot password?
                 </Link>
@@ -214,7 +267,7 @@ const Login = () => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                   placeholder="Enter your password"
                   className="w-full p-3 pl-10 pr-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                   required
@@ -235,7 +288,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full p-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
+              className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
             >
               {isLoading ? (
                 <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -250,7 +303,7 @@ const Login = () => {
             <div className="mt-5 text-center">
               <p className="text-gray-400">
                 Don't have an account?{" "}
-                <Link to="/signup" className="text-red-400 hover:text-red-300">
+                <Link to="/signup" className="text-blue-400 hover:text-blue-300">
                   Sign up now
                 </Link>
               </p>

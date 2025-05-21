@@ -1,99 +1,110 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import { Truck, BarChart2, Clock, Database, Map } from "lucide-react";
+import React from "react";
+import { Truck, BarChart2, Clock, Database, Map, Package, Warehouse, Gauge, AlertCircle } from "lucide-react";
 
-const servicesData = [
+const logisticsServices = [
   {
     name: "Route Optimization",
-    icon: <div className="rounded-full bg-red-600 p-6 w-24 h-24 flex items-center justify-center">
-      <Map color="white" size={36} />
-    </div>,
-    ctaText: "View Routes",
-    link: "#",
+    description: "AI-powered route planning with real-time traffic updates",
+    icon: <Map className="text-blue-600" size={32} />,
+    ctaText: "Optimize Routes",
+    link: "/routes"
   },
   {
-    name: "Predictive Analytics",
-    icon: <div className="rounded-full bg-red-600 p-6 w-24 h-24 flex items-center justify-center">
-      <BarChart2 color="white" size={36} />
-    </div>,
-    ctaText: "View Forecasts",
-    link: "#",
+    name: "Fleet Tracking",
+    description: "Live GPS tracking of all vehicles in your fleet",
+    icon: <Gauge className="text-blue-600" size={32} />,
+    ctaText: "Track Fleet",
+    link: "/fleet"
   },
   {
-    name: "Resource Allocation",
-    icon: <div className="rounded-full bg-red-600 p-6 w-24 h-24 flex items-center justify-center">
-      <Truck color="white" size={36} />
-    </div>,
-    ctaText: "Manage Resources",
-    link: "#",
+    name: "Inventory Management",
+    description: "Real-time warehouse stock monitoring",
+    icon: <Warehouse className="text-blue-600" size={32} />,
+    ctaText: "Manage Inventory",
+    link: "/inventory"
   },
   {
-    name: "Customer Analytics",
-    icon: <div className="rounded-full bg-red-600 p-6 w-24 h-24 flex items-center justify-center">
-      <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="white" strokeWidth="2">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    </div>,
-    ctaText: "View Insights",
-    link: "#",
+    name: "Shipment Tracking",
+    description: "End-to-end package tracking system",
+    icon: <Package className="text-blue-600" size={32} />,
+    ctaText: "Track Shipments",
+    link: "/shipments"
   },
   {
-    name: "Real-Time Tracking",
-    icon: <div className="rounded-full bg-red-600 p-6 w-24 h-24 flex items-center justify-center">
-      <Clock color="white" size={36} />
-    </div>,
-    ctaText: "Monitor Fleet",
-    link: "#",
+    name: "Analytics Dashboard",
+    description: "Performance metrics and business insights",
+    icon: <BarChart2 className="text-blue-600" size={32} />,
+    ctaText: "View Analytics",
+    link: "/analytics"
   },
+  {
+    name: "Alert System",
+    description: "Real-time notifications for delays/issues",
+    icon: <AlertCircle className="text-blue-600" size={32} />,
+    ctaText: "Configure Alerts",
+    link: "/alerts"
+  }
 ];
 
-const RemovalsServices = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const servicesPerPage = 5;
-
-  const indexOfLastService = currentPage * servicesPerPage;
-  const indexOfFirstService = indexOfLastService - servicesPerPage;
-  const currentServices = servicesData.slice(indexOfFirstService, indexOfLastService);
-
+const LogisticsServices = () => {
   return (
-    <section id="services">
-      <div className="bg-gray-800 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="pb-8 text-center">
-            <h1 className="text-3xl font-semibold mb-2">
-              Data-Driven Relocation Optimization
-            </h1>
-            <p className="text-gray-300">
-              ROPS offers intelligent analytics and predictive solutions for efficient relocations.
-            </p>
-          </div>
+    <section id="services" className="bg-gray-50 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Smart Logistics Solutions
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Our integrated platform provides end-to-end logistics management powered by IoT and AI
+          </p>
+        </div>
 
-          <div className="flex flex-wrap justify-center gap-4">
-            {currentServices.map((service) => (
-              <div
-                key={service.name}
-                className="flex flex-col items-center w-40 text-center"
-              >
-                <div className="mb-4 flex justify-center">
-                  {service.icon}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {logisticsServices.map((service) => (
+            <div 
+              key={service.name}
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            >
+              <div className="p-6">
+                <div className="flex items-center mb-4">
+                  <div className="bg-blue-50 p-3 rounded-lg mr-4">
+                    {service.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    {service.name}
+                  </h3>
                 </div>
-                <h3 className="text-lg font-medium mb-1">{service.name}</h3>
-                <a 
-                  href={service.link} 
-                  className="text-sm text-gray-300 hover:text-white"
+                
+                <p className="text-gray-600 mb-6">
+                  {service.description}
+                </p>
+                
+                <a
+                  href={service.link}
+                  className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
                 >
                   {service.ctaText}
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </a>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <a
+            href="/contact"
+            className="inline-block px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Request Custom Solution
+          </a>
         </div>
       </div>
     </section>
   );
 };
 
-export default RemovalsServices;
+export default LogisticsServices;

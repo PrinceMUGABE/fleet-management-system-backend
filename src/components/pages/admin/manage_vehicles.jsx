@@ -35,8 +35,12 @@ import {
   Tooltip,
   Legend,
   PieChart,
+  Bar,
+  Area,
   Pie,
   Cell,
+  AreaChart,
+  BarChart,
 } from "recharts";
 
 class ErrorBoundary extends React.Component {
@@ -52,11 +56,11 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-4 text-red-100 bg-red-900 rounded-lg">
+        <div className="p-4 text-blue-100 bg-blue-900 rounded-lg">
           <h3 className="font-semibold">Something went wrong</h3>
           <button
             onClick={() => window.location.reload()}
-            className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Refresh Page
           </button>
@@ -240,125 +244,131 @@ function Admin_Manage_Vehicles() {
   };
 
   const renderCharts = () => {
-    if (!vehicleData.length) return null;
+  if (!vehicleData.length) return null;
 
-    const vehicleTypeData = Object.entries(
-      vehicleData.reduce((acc, vehicle) => {
-        acc[vehicle.type] = (acc[vehicle.type] || 0) + 1;
-        return acc;
-      }, {})
-    ).map(([type, value]) => ({ name: type, value }));
+  const vehicleTypeData = Object.entries(
+    vehicleData.reduce((acc, vehicle) => {
+      acc[vehicle.type] = (acc[vehicle.type] || 0) + 1;
+      return acc;
+    }, {})
+  ).map(([type, value]) => ({ name: type, value }));
 
-    const vehicleWeightData = Object.entries(
-      vehicleData.reduce((acc, vehicle) => {
-        const weightRange =
-          Math.floor(vehicle.total_weight_to_carry / 1000) * 1000;
-        acc[weightRange] = (acc[weightRange] || 0) + 1;
-        return acc;
-      }, {})
-    ).map(([weightRange, count]) => ({
-      name: `${weightRange}-${Number(weightRange) + 1000} kg`,
-      count,
-    }));
+  const vehicleWeightData = Object.entries(
+    vehicleData.reduce((acc, vehicle) => {
+      const weightRange =
+        Math.floor(vehicle.total_weight_to_carry / 1000) * 1000;
+      acc[weightRange] = (acc[weightRange] || 0) + 1;
+      return acc;
+    }, {})
+  ).map(([weightRange, count]) => ({
+    name: `${weightRange}-${Number(weightRange) + 1000} kg`,
+    count,
+  }));
 
-    const handleImageChange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        // Read file as base64
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setSelectedImage(reader.result);
-          setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-
-    return (
-      <div className="w-full lg:w-1/3 space-y-6">
-        <ErrorBoundary>
-          <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800 h-72">
-            <h3 className="text-sm font-semibold mb-4 text-red-400 flex items-center">
-              <FontAwesomeIcon icon={faTruck} className="mr-2" />
-              Vehicle Type Distribution
-            </h3>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={vehicleTypeData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  label={{
-                    position: "outside",
-                    offset: 10,
-                    fill: "#e5e7eb",
-                  }}
-                >
-                  {vehicleTypeData.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#1f2937",
-                    borderColor: "#374151",
-                    color: "#f9fafb",
-                  }}
-                />
-                <Legend
-                  verticalAlign="bottom"
-                  height={36}
-                  wrapperStyle={{ color: "#e5e7eb" }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </ErrorBoundary>
-
-        <ErrorBoundary>
-          <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800 h-72">
-            <h3 className="text-sm font-semibold mb-4 text-red-400 flex items-center">
-              <FontAwesomeIcon icon={faChartPie} className="mr-2" />
-              Vehicle Weight Distribution
-            </h3>
-            <ResponsiveContainer>
-              <LineChart data={vehicleWeightData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis
-                  dataKey="name"
-                  padding={{ left: 20, right: 20 }}
-                  tick={{ fontSize: 12, fill: "#e5e7eb" }}
-                />
-                <YAxis
-                  tick={{ fontSize: 12, fill: "#e5e7eb" }}
-                  padding={{ top: 20, bottom: 20 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#1f2937",
-                    borderColor: "#374151",
-                    color: "#f9fafb",
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="count"
-                  stroke="#FF6B6B"
-                  name="Vehicle Count"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </ErrorBoundary>
-      </div>
-    );
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Read file as base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result);
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
+
+  return (
+    // Changed from w-full lg:w-1/3 to w-full - the charts container will now take full width
+    <div className="w-full space-y-6 md:space-y-6 lg:space-y-0 lg:flex lg:flex-row lg:gap-6">
+      <ErrorBoundary>
+        {/* Chart 1 - Changed to make it full width on small screens and 1/2 width on large screens */}
+        <div className="w-full lg:w-1/2 bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800 h-72 mb-6 lg:mb-0">
+          <h3 className="text-sm font-semibold mb-4 text-blue-400 flex items-center">
+            <FontAwesomeIcon icon={faTruck} className="mr-2" />
+            Vehicle Type Distribution
+          </h3>
+          <ResponsiveContainer>
+            <AreaChart>
+              <Area
+                data={vehicleTypeData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                label={{
+                  position: "outside",
+                  offset: 10,
+                  fill: "#e5e7eb",
+                }}
+              >
+                {vehicleTypeData.map((_, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Area>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#1f2937",
+                  borderColor: "#374151",
+                  color: "#f9fafb",
+                }}
+              />
+              <Legend
+                verticalAlign="bottom"
+                height={36}
+                wrapperStyle={{ color: "#e5e7eb" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </ErrorBoundary>
+
+      <ErrorBoundary>
+        {/* Chart 2 - Changed to make it full width on small screens and 1/2 width on large screens */}
+        <div className="w-full lg:w-1/2 bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800 h-72">
+          <h3 className="text-sm font-semibold mb-4 text-blue-400 flex items-center">
+            <FontAwesomeIcon icon={faChartPie} className="mr-2" />
+            Vehicle Weight Distribution
+          </h3>
+          <ResponsiveContainer>
+            <BarChart data={vehicleWeightData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis
+                dataKey="name"
+                padding={{ left: 20, right: 20 }}
+                tick={{ fontSize: 12, fill: "#e5e7eb" }}
+              />
+              <YAxis
+                tick={{ fontSize: 12, fill: "#e5e7eb" }}
+                padding={{ top: 20, bottom: 20 }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#1f2937",
+                  borderColor: "#374151",
+                  color: "#f9fafb",
+                }}
+              />
+              {/* Changed Bar component to have fill color and adjusted other properties */}
+              <Bar
+                type="monotone"
+                dataKey="count"
+                stroke="#FF6B6B"
+                fill="#3b82f6"
+                name="Vehicle Count"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </ErrorBoundary>
+    </div>
+  );
+};
 
   const filteredData = vehicleData.filter((vehicle) =>
     [vehicle.type, vehicle.total_weight_to_carry.toString()].some((field) =>
@@ -528,170 +538,181 @@ function Admin_Manage_Vehicles() {
   
 
   const renderModal = () => {
-    return (
+  return (
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center ${
+        isModalOpen ? "visible" : "invisible"
+      }`}
+    >
       <div
-        className={`fixed inset-0 z-50 flex items-center justify-center ${
-          isModalOpen ? "visible" : "invisible"
+        className={`fixed inset-0 bg-black opacity-50 ${
+          isModalOpen ? "block" : "hidden"
         }`}
-      >
-        <div
-          className={`fixed inset-0 bg-black opacity-50 ${
-            isModalOpen ? "block" : "hidden"
-          }`}
-          onClick={() => setIsModalOpen(false)}
-        ></div>
-        <div className="bg-gray-900 rounded-lg shadow-xl p-6 z-50 w-96 border border-gray-800">
-          <h2 className="text-xl font-bold mb-4 text-red-500">
-            {currentVehicle ? "Update Vehicle" : "Add New Vehicle"}
-          </h2>
-          <form onSubmit={handleAddUpdateVehicle}>
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="w-full md:w-1/2 space-y-4">
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Vehicle Type
-                  </label>
-                  <input
-                    type="text"
-                    name="type"
-                    defaultValue={currentVehicle?.type || ""}
-                    required
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Relocation Size
-                  </label>
-                  <select
-                    name="relocation_size"
-                    defaultValue={currentVehicle?.relocation_size || "medium"}
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  >
-                    <option value="small">Small</option>
-                    <option value="medium">Medium</option>
-                    <option value="large">Large</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Vehicle Model
-                  </label>
-                  <input
-                    type="text"
-                    name="vehicle_model"
-                    defaultValue={currentVehicle?.vehicle_model || ""}
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  />
-                </div>
-              </div>
-              <div className="w-full md:w-1/2 space-y-4">
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Plate Number
-                  </label>
-                  <input
-                    type="text"
-                    name="plate_number"
-                    defaultValue={currentVehicle?.plate_number || ""}
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Total Weight to Carry (kg)
-                  </label>
-                  <input
-                    type="number"
-                    name="total_weight"
-                    defaultValue={currentVehicle?.total_weight_to_carry || ""}
-                    required
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Total Man Power to Pack
-                  </label>
-                  <input
-                    type="number"
-                    name="total_man_power"
-                    defaultValue={currentVehicle?.total_man_power || ""}
-                    required
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  />
-                </div>
-
-                
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Vehicle Image
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-red-600 file:text-white hover:file:bg-red-700"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Driving License Category
-                  </label>
-                  <select
-                    name="driving_category"
-                    defaultValue={currentVehicle?.driving_category || "B"}
-                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
-                  >
-                    <option value="A">Category A</option>
-                    <option value="B">Category B</option>
-                    <option value="B1">Category B1</option>
-                    <option value="C">Category C</option>
-                    <option value="D">Category D</option>
-                    <option value="D1">Category D1</option>
-                    <option value="E">Category E</option>
-                    <option value="F">Category F</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {(imagePreview || currentVehicle?.image_base64) && (
-              <div className="mt-4 flex justify-center">
-                <img
-                  src={imagePreview || currentVehicle?.image_base64}
-                  alt="Vehicle Preview"
-                  className="w-40 h-40 object-cover rounded"
+        onClick={() => setIsModalOpen(false)}
+      ></div>
+      
+      {/* Increased max-height and width, added overflow-y-auto to make content scrollable */}
+      <div className="bg-gray-900 rounded-lg shadow-xl p-6 z-50 w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-800">
+        <h2 className="text-xl font-bold mb-6 text-blue-500 sticky top-0 bg-gray-900 py-2">
+          {currentVehicle ? "Update Vehicle" : "Add New Vehicle"}
+        </h2>
+        
+        <form onSubmit={handleAddUpdateVehicle} className="space-y-6">
+          {/* Form fields container with responsive flex layout */}
+          <div className="flex flex-col lg:flex-row lg:gap-6">
+            {/* Left column - takes full width on mobile, half width on large screens */}
+            <div className="w-full lg:w-1/2 space-y-4">
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Vehicle Type
+                </label>
+                <input
+                  type="text"
+                  name="type"
+                  defaultValue={currentVehicle?.type || ""}
+                  required
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
                 />
               </div>
-            )}
-
-            <div className="flex justify-end space-x-2 mt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsModalOpen(false);
-                  setSelectedImage(null);
-                  setImagePreview(null);
-                }}
-                className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                {currentVehicle ? "Update" : "Add"}
-              </button>
+              
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Relocation Size
+                </label>
+                <select
+                  name="relocation_size"
+                  defaultValue={currentVehicle?.relocation_size || "medium"}
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                >
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Vehicle Model
+                </label>
+                <input
+                  type="text"
+                  name="vehicle_model"
+                  defaultValue={currentVehicle?.vehicle_model || ""}
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Plate Number
+                </label>
+                <input
+                  type="text"
+                  name="plate_number"
+                  defaultValue={currentVehicle?.plate_number || ""}
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                />
+              </div>
             </div>
-          </form>
-        </div>
+            
+            {/* Right column - takes full width on mobile, half width on large screens */}
+            <div className="w-full lg:w-1/2 space-y-4 mt-4 lg:mt-0">
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Total Weight to Carry (kg)
+                </label>
+                <input
+                  type="number"
+                  name="total_weight"
+                  defaultValue={currentVehicle?.total_weight_to_carry || ""}
+                  required
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Total Man Power to Pack
+                </label>
+                <input
+                  type="number"
+                  name="total_man_power"
+                  defaultValue={currentVehicle?.total_man_power || ""}
+                  required
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Driving License Category
+                </label>
+                <select
+                  name="driving_category"
+                  defaultValue={currentVehicle?.driving_category || "B"}
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                >
+                  <option value="A">Category A</option>
+                  <option value="B">Category B</option>
+                  <option value="B1">Category B1</option>
+                  <option value="C">Category C</option>
+                  <option value="D">Category D</option>
+                  <option value="D1">Category D1</option>
+                  <option value="E">Category E</option>
+                  <option value="F">Category F</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Vehicle Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Image preview - centered regardless of screen size */}
+          {(imagePreview || currentVehicle?.image_base64) && (
+            <div className="flex justify-center mt-6">
+              <img
+                src={imagePreview || currentVehicle?.image_base64}
+                alt="Vehicle Preview"
+                className="w-48 h-48 object-cover rounded border-2 border-gray-700"
+              />
+            </div>
+          )}
+
+          {/* Action buttons - sticky to the bottom for better UX with scrolling */}
+          <div className="flex justify-end space-x-3 pt-4 sticky bottom-0 bg-gray-900">
+            <button
+              type="button"
+              onClick={() => {
+                setIsModalOpen(false);
+                setSelectedImage(null);
+                setImagePreview(null);
+              }}
+              className="px-5 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              {currentVehicle ? "Update" : "Add"}
+            </button>
+          </div>
+        </form>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   const renderSummaryCards = () => {
     const stats = getSummaryStats();
@@ -701,12 +722,12 @@ function Admin_Manage_Vehicles() {
         <div className="bg-gradient-to-r from-red-900 to-red-700 rounded-lg shadow-md p-4 border border-red-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-red-200 text-sm">Total Vehicles</p>
+              <p className="text-blue-200 text-sm">Total Vehicles</p>
               <h3 className="text-white text-2xl font-bold">
                 {stats.totalVehicles}
               </h3>
             </div>
-            <div className="bg-red-800 p-3 rounded-full">
+            <div className="bg-blue-800 p-3 rounded-full">
               <FontAwesomeIcon icon={faTruck} className="text-white text-xl" />
             </div>
           </div>
@@ -771,7 +792,7 @@ function Admin_Manage_Vehicles() {
       >
         <div className="p-4 border-b border-gray-700">
           <div className="flex justify-between items-center">
-            <h3 className="text-red-400 font-semibold flex items-center">
+            <h3 className="text-blue-400 font-semibold flex items-center">
               <FontAwesomeIcon icon={faFilter} className="mr-2" />
               Advanced Filters
             </h3>
@@ -795,7 +816,7 @@ function Admin_Manage_Vehicles() {
                       type="checkbox"
                       checked={activeFilters.type.includes(type)}
                       onChange={() => handleFilterChange("type", type)}
-                      className="mr-2 text-red-600 rounded focus:ring-red-500 h-4 w-4"
+                      className="mr-2 text-blue-600 rounded focus:ring-red-500 h-4 w-4"
                     />
                     <span className="text-gray-300">{type}</span>
                   </label>
@@ -816,7 +837,7 @@ function Admin_Manage_Vehicles() {
                       onChange={() =>
                         handleFilterChange("relocationSize", size)
                       }
-                      className="mr-2 text-red-600 rounded focus:ring-red-500 h-4 w-4"
+                      className="mr-2 text-blue-600 rounded focus:ring-red-500 h-4 w-4"
                     />
                     <span className="text-gray-300 capitalize">{size}</span>
                   </label>
@@ -837,7 +858,7 @@ function Admin_Manage_Vehicles() {
                       onChange={() =>
                         handleFilterChange("drivingCategory", category)
                       }
-                      className="mr-2 text-red-600 rounded focus:ring-red-500 h-4 w-4"
+                      className="mr-2 text-blue-600 rounded focus:ring-red-500 h-4 w-4"
                     />
                     <span className="text-gray-300">Category {category}</span>
                   </label>
@@ -860,7 +881,7 @@ function Admin_Manage_Vehicles() {
                         onChange={() =>
                           handleFilterChange("weightRange", range)
                         }
-                        className="mr-2 text-red-600 rounded focus:ring-red-500 h-4 w-4"
+                        className="mr-2 text-blue-600 rounded focus:ring-red-500 h-4 w-4"
                       />
                       <span className="text-gray-300">
                         {min} - {max} kg
@@ -883,7 +904,7 @@ function Admin_Manage_Vehicles() {
             </button>
             <button
               onClick={() => setIsFilterDrawerOpen(false)}
-              className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               Apply
             </button>
@@ -898,7 +919,7 @@ function Admin_Manage_Vehicles() {
       <div className="p-4 bg-gray-800 min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="mb-6 p-4 bg-gray-900 rounded-lg shadow-lg border border-gray-700">
-            <h1 className="text-center text-red-500 font-bold text-xl mb-2">
+            <h1 className="text-center text-blue-500 font-bold text-xl mb-2">
               Manage Vehicles
             </h1>
             <p className="text-center text-gray-400 text-sm">
@@ -911,7 +932,7 @@ function Admin_Manage_Vehicles() {
               className={`text-center py-3 px-4 mb-6 rounded-lg shadow-md ${
                 messageType === "success"
                   ? "bg-green-900 text-green-100"
-                  : "bg-red-900 text-red-100"
+                  : "bg-blue-900 text-blue-100"
               }`}
             >
               {message}
@@ -925,10 +946,10 @@ function Admin_Manage_Vehicles() {
               <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-700 mb-6">
                 <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
                   <div className="flex items-center">
-                    <span className="text-red-400 flex items-center">
+                    <span className="text-blue-400 flex items-center">
                       <FontAwesomeIcon icon={faTruck} className="mr-2" />
                       <span className="font-semibold">Total Vehicles:</span>
-                      <span className="ml-2 px-3 py-1 bg-red-600 text-white rounded-full">
+                      <span className="ml-2 px-3 py-1 bg-blue-600 text-white rounded-full">
                         {filteredAndSortedData.length}
                       </span>
                     </span>
@@ -958,7 +979,7 @@ function Admin_Manage_Vehicles() {
                       <FontAwesomeIcon icon={faFilter} className="mr-2" />
                       Filters
                       {Object.values(activeFilters).flat().length > 0 && (
-                        <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-600 rounded-full">
+                        <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-600 rounded-full">
                           {Object.values(activeFilters).flat().length}
                         </span>
                       )}
@@ -969,7 +990,7 @@ function Admin_Manage_Vehicles() {
                         onClick={() =>
                           setDownloadMenuVisible(!downloadMenuVisible)
                         }
-                        className="py-2 bg-red-600 px-4 rounded-lg text-white flex items-center justify-center hover:bg-red-700 transition duration-200 w-full sm:w-auto"
+                        className="py-2 bg-blue-600 px-4 rounded-lg text-white flex items-center justify-center hover:bg-blue-700 transition duration-200 w-full sm:w-auto"
                       >
                         <FontAwesomeIcon icon={faDownload} className="mr-2" />
                         Export
@@ -1005,12 +1026,12 @@ function Admin_Manage_Vehicles() {
                   </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-lg shadow-md border border-gray-700">
-                  <table
+
+                <table
                     id="vehicle-table"
                     className="w-full text-sm text-left"
                   >
-                    <thead className="text-xs uppercase bg-red-600 text-white">
+                    <thead className="text-xs uppercase bg-blue-600 text-white">
                       <tr>
                         <th className="px-6 py-3 rounded-tl-lg">#</th>
                         <th className="px-6 py-3">Image</th>
@@ -1102,7 +1123,7 @@ function Admin_Manage_Vehicles() {
                                 </button>
                                 <button
                                   onClick={() => handleDelete(vehicle.id)}
-                                  className="text-red-400 hover:text-red-300 transition"
+                                  className="text-blue-400 hover:text-blue-300 transition"
                                 >
                                   <FontAwesomeIcon icon={faTrash} />
                                 </button>
@@ -1113,7 +1134,7 @@ function Admin_Manage_Vehicles() {
                       )}
                     </tbody>
                   </table>
-                </div>
+
 
                 <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
                   <div className="flex items-center">
@@ -1143,7 +1164,7 @@ function Admin_Manage_Vehicles() {
                     >
                       Previous
                     </button>
-                    <span className="px-4 py-2 bg-red-600 text-white rounded-lg">
+                    <span className="px-4 py-2 bg-blue-600 text-white rounded-lg">
                       Page {currentPage}
                     </span>
                     <button
@@ -1161,8 +1182,9 @@ function Admin_Manage_Vehicles() {
                 </div>
               </div>
             </div>
-            {renderCharts()}
+            
           </div>
+          {renderCharts()}
         </div>
         {renderFilterDrawer()}
         {isFilterDrawerOpen && (
