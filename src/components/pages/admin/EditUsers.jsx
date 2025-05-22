@@ -89,7 +89,8 @@ const EditUser = () => {
       {/* Background overlay with subtle pattern */}
       <div className="absolute inset-0 bg-gray-900 opacity-50 pattern-grid-lg"></div>
 
-      <div className="container mx-auto max-w-md z-10">
+      {/* Responsive container - wider on larger screens */}
+      <div className="container mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl z-10">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">
             Update User
@@ -100,54 +101,56 @@ const EditUser = () => {
         </div>
 
         <div className="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
-          <div className="p-6 bg-red-600 text-white">
+          <div className="p-6 bg-blue-600 text-white">
             <h3 className="text-xl font-semibold">Edit User Profile</h3>
             <p className="text-gray-100 mt-1">Update user account details</p>
           </div>
 
           {errorMessage && (
-            <div className="mx-6 mt-6 p-3 rounded bg-red-900 text-red-100">
+            <div className="mx-6 mt-6 p-3 rounded bg-blue-900 text-red-600">
               {errorMessage}
             </div>
           )}
 
           <form className="p-6 space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="phone_number"
-                className="block text-gray-300 mb-2 font-medium"
-              >
-                Phone Number
-              </label>
-              <input
-                id="phone_number"
-                name="phone_number"
-                type="text"
-                value={data.phone_number || ""}
-                onChange={(e) => setData({ ...data, phone_number: e.target.value })}
-                required
-                className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
-                placeholder="e.g., 0781234567"
-              />
-            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="phone_number"
+                  className="block text-gray-300 mb-2 font-medium"
+                >
+                  Phone Number
+                </label>
+                <input
+                  id="phone_number"
+                  name="phone_number"
+                  type="text"
+                  value={data.phone_number || ""}
+                  onChange={(e) => setData({ ...data, phone_number: e.target.value })}
+                  required
+                  className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  placeholder="e.g., 0781234567"
+                />
+              </div>
 
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-gray-300 mb-2 font-medium"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={data.email || ""}
-                onChange={(e) => setData({ ...data, email: e.target.value })}
-                required
-                className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
-                placeholder="e.g., example@gmail.com"
-              />
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-gray-300 mb-2 font-medium"
+                >
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={data.email || ""}
+                  onChange={(e) => setData({ ...data, email: e.target.value })}
+                  required
+                  className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  placeholder="e.g., example@gmail.com"
+                />
+              </div>
             </div>
 
             <div>
@@ -163,18 +166,19 @@ const EditUser = () => {
                 value={data.role || ""}
                 onChange={(e) => setData({ ...data, role: e.target.value })}
                 required
-                className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
               >
                 <option value="admin">Admin</option>
                 <option value="customer">Customer</option>
                 <option value="driver">Driver</option>
+                <option value="dispatcher">Dispatcher</option>
               </select>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full p-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
+              className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 flex items-center justify-center gap-2 mt-6"
             >
               {loading ? (
                 <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

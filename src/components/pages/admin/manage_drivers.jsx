@@ -1045,11 +1045,14 @@ function Admin_Manage_Drivers() {
             >
               Add Driver
             </button>
+            
           </div>
+          
         </div>
 
-        {renderDriversTable()}
+        
       </div>
+      {renderDriversTable()}
 
       {renderCharts()}
       {renderFilterModal()}
