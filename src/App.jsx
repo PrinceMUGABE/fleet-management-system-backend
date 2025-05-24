@@ -47,7 +47,12 @@ import Driver_Map from "./components/pages/driver/map.jsx";
 import Driver_Manage_Feedbacks from "./components/pages/driver/manage_feedbacks.jsx";
 import DriverProfile from "./components/pages/driver/UserProfile.jsx";
 import Driver_Manage_Relocations from "./components/pages/driver/my_relocations.jsx";
-import Admin_Manage_Man_Powers from "./components/pages/admin/manage_manPowers.jsx";
+import Admin_Manage_Warehouses from "./components/pages/admin/manage_warehouses.jsx";
+import WarehouseManagement from "./components/pages/admin/manage_warehouses.jsx";
+import CategoryManagement from "./components/pages/admin/category_mangement.jsx";
+import CommodityManagement from "./components/pages/admin/commodity_management.jsx";
+import InventoryMovementHistory from "./components/pages/admin/inventory_movement_history.jsx";
+import WarehouseCommodityManagement from "./components/pages/admin/warehouse_commodity_management.jsx";
 
 
 
@@ -93,10 +98,19 @@ const App = () => {
 
 
             <Route path="/admin/drivers" element={<Admin_Manage_Drivers />} />
-            <Route path="/admin/man_powers" element={<Admin_Manage_Man_Powers />} />
+            <Route path="/admin/warehouses" element={<Admin_Manage_Warehouses />} />
             <Route path="/admin/feedbacks" element={<Admin_Manage_Feedbacks />} />
             <Route path="/admin/forecasts" element={<Admin_DemandForecast />} />
             <Route path="/admin/profile/:id" element={<AdminProfile />} />
+
+
+            <Route path="/admin/warehouses" element={<WarehouseManagement />} />
+            {/* <Route path="/admin/warehouses/:warehouseId" element={<WarehouseDetail />} /> */}
+            <Route path="/admin/warehouses/:warehouseId/commodities" element={<WarehouseCommodityManagement />} />
+            <Route path="/admin/warehouses/:warehouseId/movements" element={<InventoryMovementHistory />} />
+            <Route path="/admin/categories" element={<CategoryManagement />} />
+            <Route path="/admin/commodities" element={<CommodityManagement />} />
+            <Route path="/admin/warehouses/:warehouseId/movements" element={<InventoryMovementHistory />} />
 
           </Route>
 
