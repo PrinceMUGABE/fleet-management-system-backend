@@ -40,11 +40,12 @@ function Sidebar() {
     { id: 3, name: "Vehicles", path: "/admin/vehicles", icon: <MdDirectionsCar className="text-xl" /> },
     { id: 4, name: "Drivers", path: "/admin/drivers", icon: <MdPersonPin className="text-xl" /> },
     { id: 5, name: "Warehouses", path: "/admin/warehouses", icon: <MdPersonPin className="text-xl" /> },
-    { id: 6, name: "Orders", path: "/admin/relocations", icon: <MdCompareArrows className="text-xl" /> },
-    { id: 7, name: "Commodities", path: "/admin/commodities", icon: <MdInsights className="text-xl" /> },
-    { id: 8, name: "Categories", path: "/admin/categories", icon: <MdInsights className="text-xl" /> },
-    { id: 9, name: "Feedbacks", path: "/admin/feedbacks", icon: <MdFeedback className="text-xl" /> },
-    { id: 10, name: "Profile", path: `/admin/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
+    { id: 6, name: "Storage Costs", path: "/admin/costs", icon: <MdPersonPin className="text-xl" /> },
+    { id: 7, name: "Orders", path: "/admin/relocations", icon: <MdCompareArrows className="text-xl" /> },
+    { id: 8, name: "Commodities", path: "/admin/commodities", icon: <MdInsights className="text-xl" /> },
+    { id: 9, name: "Categories", path: "/admin/categories", icon: <MdInsights className="text-xl" /> },
+    { id: 10, name: "Feedbacks", path: "/admin/feedbacks", icon: <MdFeedback className="text-xl" /> },
+    { id: 11, name: "Profile", path: `/admin/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
   ];
 
   // Check if the current path matches the link path

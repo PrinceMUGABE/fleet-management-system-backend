@@ -53,6 +53,7 @@ import CategoryManagement from "./components/pages/admin/category_mangement.jsx"
 import CommodityManagement from "./components/pages/admin/commodity_management.jsx";
 import InventoryMovementHistory from "./components/pages/admin/inventory_movement_history.jsx";
 import WarehouseCommodityManagement from "./components/pages/admin/warehouse_commodity_management.jsx";
+import StorageCosts from "./components/pages/admin/manage_storage_costs.jsx";
 
 
 
@@ -111,6 +112,7 @@ const App = () => {
             <Route path="/admin/categories" element={<CategoryManagement />} />
             <Route path="/admin/commodities" element={<CommodityManagement />} />
             <Route path="/admin/warehouses/:warehouseId/movements" element={<InventoryMovementHistory />} />
+            <Route path="/admin/costs" element={<StorageCosts />} />
 
           </Route>
 
