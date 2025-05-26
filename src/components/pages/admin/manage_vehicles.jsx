@@ -119,6 +119,7 @@ function Admin_Manage_Vehicles() {
     relocationSize: [],
     drivingCategory: [],
     weightRange: [],
+    status: [], // ADD THIS LINE
   });
 
   // Add this for filter drawer
@@ -190,6 +191,7 @@ function Admin_Manage_Vehicles() {
         vehicle_model: e.target.vehicle_model.value, // Add this line
         plate_number: e.target.plate_number.value, // Add this line
         driving_category: e.target.driving_category.value,
+        status: e.target.status.value,
       };
 
       // Add image base64 if selected or existing
@@ -252,15 +254,15 @@ function Admin_Manage_Vehicles() {
     ).map(([type, value]) => ({ name: type, value }));
 
     const vehicleSizeData = Object.entries(
-  vehicleData.reduce((acc, vehicle) => {
-    const size = vehicle.relocation_size; // Get the relocation_size directly
-    acc[size] = (acc[size] || 0) + 1; // Count occurrences of each size
-    return acc;
-  }, {})
-).map(([size, count]) => ({
-  name: size, // Use the size string directly (e.g., "Small", "Medium", "Large")
-  count,
-}));
+      vehicleData.reduce((acc, vehicle) => {
+        const size = vehicle.relocation_size; // Get the relocation_size directly
+        acc[size] = (acc[size] || 0) + 1; // Count occurrences of each size
+        return acc;
+      }, {})
+    ).map(([size, count]) => ({
+      name: size, // Use the size string directly (e.g., "Small", "Medium", "Large")
+      count,
+    }));
 
     const handleImageChange = (e) => {
       const file = e.target.files[0];
@@ -374,11 +376,13 @@ function Admin_Manage_Vehicles() {
   );
 
   // Update the filteredData variable to include both search and filters
+
   const searchFilteredData = vehicleData.filter((vehicle) =>
     [
       vehicle.type,
       vehicle.vehicle_model,
       vehicle.plate_number,
+      vehicle.status, // ADD THIS LINE
     ].some((field) => field?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -408,6 +412,12 @@ function Admin_Manage_Vehicles() {
         return false;
       }
 
+      if (
+        activeFilters.status.length > 0 &&
+        !activeFilters.status.includes(vehicle.status)
+      ) {
+        return false;
+      }
 
       return true;
     });
@@ -423,7 +433,6 @@ function Admin_Manage_Vehicles() {
   // Add this function to get summary stats
   const getSummaryStats = () => {
     if (!vehicleData.length) return {};
-
 
     // Get unique types
     const uniqueTypes = [...new Set(vehicleData.map((v) => v.type))];
@@ -454,6 +463,17 @@ function Admin_Manage_Vehicles() {
     };
   };
 
+  const getStatusStats = () => {
+    if (!vehicleData.length) return { active: 0, inactive: 0 };
+
+    const activeCount = vehicleData.filter((v) => v.status === "active").length;
+    const inactiveCount = vehicleData.filter(
+      (v) => v.status === "not_active"
+    ).length;
+
+    return { active: activeCount, inactive: inactiveCount };
+  };
+
   // Add this function to handle filter changes
   const handleFilterChange = (filterType, value) => {
     setActiveFilters((prev) => {
@@ -477,6 +497,7 @@ function Admin_Manage_Vehicles() {
       relocationSize: [],
       drivingCategory: [],
       weightRange: [],
+      status: [],
     });
   };
 
@@ -490,10 +511,9 @@ function Admin_Manage_Vehicles() {
       ...new Set(vehicleData.map((v) => v.driving_category)),
     ];
 
+    const statuses = [...new Set(vehicleData.map((v) => v.status))];
 
-
-
-    return { types, relocationSizes, drivingCategories };
+    return { types, relocationSizes, drivingCategories, statuses };
   };
 
   const renderModal = () => {
@@ -567,7 +587,17 @@ function Admin_Manage_Vehicles() {
                   />
                 </div>
 
-
+                <div>
+                  <label className="block text-gray-300 mb-2">Status</label>
+                  <select
+                    name="status"
+                    defaultValue={currentVehicle?.status || "active"}
+                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                  >
+                    <option value="active">Active</option>
+                    <option value="not_active">Not Active</option>
+                  </select>
+                </div>
 
                 <div>
                   <label className="block text-gray-300 mb-2">
@@ -671,6 +701,23 @@ function Admin_Manage_Vehicles() {
           </div>
         </div>
 
+        <div className="bg-gradient-to-r from-yellow-900 to-yellow-700 rounded-lg shadow-md p-4 border border-yellow-800">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-yellow-200 text-sm">Active Vehicles</p>
+              <h3 className="text-white text-2xl font-bold">
+                {getStatusStats().active}
+              </h3>
+            </div>
+            <div className="bg-yellow-800 p-3 rounded-full">
+              <FontAwesomeIcon
+                icon={faClipboardList}
+                className="text-white text-xl"
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="bg-gradient-to-r from-green-900 to-green-700 rounded-lg shadow-md p-4 border border-green-800">
           <div className="flex items-center justify-between">
             <div>
@@ -749,6 +796,26 @@ function Admin_Manage_Vehicles() {
             </div>
 
             <div className="mb-6">
+              <h4 className="text-gray-300 font-medium mb-2">Status</h4>
+              <div className="space-y-2">
+                {filterOptions.statuses &&
+                  filterOptions.statuses.map((status) => (
+                    <label key={status} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={activeFilters.status.includes(status)}
+                        onChange={() => handleFilterChange("status", status)}
+                        className="mr-2 text-blue-600 rounded focus:ring-blue-500 h-4 w-4"
+                      />
+                      <span className="text-gray-300 capitalize">
+                        {status === "active" ? "Active" : "Not Active"}
+                      </span>
+                    </label>
+                  ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
               <h4 className="text-gray-300 font-medium mb-2">
                 Relocation Size
               </h4>
@@ -794,7 +861,6 @@ function Admin_Manage_Vehicles() {
               <h4 className="text-gray-300 font-medium mb-2">
                 Weight Range (kg)
               </h4>
-
             </div>
           </div>
         </div>
@@ -847,240 +913,252 @@ function Admin_Manage_Vehicles() {
           {renderSummaryCards()}
 
           <div className="flex flex-col gap-6">
-  <div className="w-full">
-    <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-700 mb-6">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
-        <div className="flex items-center">
-          <span className="text-blue-400 flex items-center">
-            <FontAwesomeIcon icon={faTruck} className="mr-2" />
-            <span className="font-semibold">Total Vehicles:</span>
-            <span className="ml-2 px-3 py-1 bg-blue-600 text-white rounded-full">
-              {filteredAndSortedData.length}
-            </span>
-          </span>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="text-gray-400"
-              />
-            </div>
-            <input
-              type="text"
-              placeholder="Search vehicles..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full text-gray-300 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-          </div>
-
-          <button
-            onClick={() => setIsFilterDrawerOpen(true)}
-            className="py-2 bg-gray-700 px-4 rounded-lg text-white flex items-center justify-center hover:bg-gray-600 transition duration-200 w-full sm:w-auto"
-          >
-            <FontAwesomeIcon icon={faFilter} className="mr-2" />
-            Filters
-            {Object.values(activeFilters).flat().length > 0 && (
-              <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-600 rounded-full">
-                {Object.values(activeFilters).flat().length}
-              </span>
-            )}
-          </button>
-
-          <div className="relative">
-            <button
-              onClick={() =>
-                setDownloadMenuVisible(!downloadMenuVisible)
-              }
-              className="py-2 bg-blue-600 px-4 rounded-lg text-white flex items-center justify-center hover:bg-blue-700 transition duration-200 w-full sm:w-auto"
-            >
-              <FontAwesomeIcon icon={faDownload} className="mr-2" />
-              Export
-            </button>
-            {downloadMenuVisible && (
-              <div className="absolute right-0 mt-2 bg-gray-800 text-gray-200 shadow-lg rounded-lg p-2 z-10 border border-gray-700 w-32">
-                {Object.keys(handleDownload).map((format) => (
-                  <button
-                    key={format}
-                    onClick={() => {
-                      handleDownload[format]();
-                      setDownloadMenuVisible(false);
-                    }}
-                    className="block w-full px-4 py-2 text-left hover:bg-gray-700 rounded transition"
-                  >
-                    {format}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={() => {
-              setCurrentVehicle(null);
-              openModal();
-            }}
-            className="py-2 bg-blue-600 px-4 rounded-lg text-white flex items-center justify-center hover:bg-blue-700 transition duration-200 w-full sm:w-auto"
-          >
-            <FontAwesomeIcon icon={faPlus} className="mr-2" />
-            Add Vehicle
-          </button>
-        </div>
-      </div>
-
-      <div className="w-full overflow-x-auto rounded-lg shadow-md border border-gray-700">
-        <table
-          id="vehicle-table"
-          className="w-full text-sm text-left"
-        >
-          <thead className="text-xs uppercase bg-blue-600 text-white">
-            <tr>
-              <th className="px-6 py-3 rounded-tl-lg">#</th>
-              <th className="px-6 py-3">Image</th>
-              <th className="px-6 py-3">Type</th>
-              <th className="px-6 py-3">Relocation Size</th>
-              <th className="px-6 py-3">Vehicle Model</th>
-              <th className="px-6 py-3">Plate Number</th>
-              <th className="px-6 py-3">Driving Category</th>
-              <th className="px-6 py-3">Created Date</th>
-              <th className="px-6 py-3 rounded-tr-lg">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentVehicles.length === 0 ? (
-              <tr>
-                <td
-                  colSpan="11"
-                  className="text-center py-8 text-gray-400 bg-gray-800"
-                >
-                  <div className="flex flex-col items-center">
-                    <FontAwesomeIcon
-                      icon={faTruck}
-                      className="text-4xl mb-3 text-gray-600"
-                    />
-                    <p>No vehicles found matching your criteria</p>
+            <div className="w-full">
+              <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-700 mb-6">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+                  <div className="flex items-center">
+                    <span className="text-blue-400 flex items-center">
+                      <FontAwesomeIcon icon={faTruck} className="mr-2" />
+                      <span className="font-semibold">Total Vehicles:</span>
+                      <span className="ml-2 px-3 py-1 bg-blue-600 text-white rounded-full">
+                        {filteredAndSortedData.length}
+                      </span>
+                    </span>
                   </div>
-                </td>
-              </tr>
-            ) : (
-              currentVehicles.map((vehicle, index) => (
-                <tr
-                  key={vehicle.id}
-                  className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition duration-200"
-                >
-                  <td className="px-6 py-4 text-gray-300">
-                    {index + 1}
-                  </td>
-                  <td className="px-6 py-4">
-                    {vehicle.image_base64 ? (
-                      <img
-                        src={vehicle.image_base64}
-                        alt={`${vehicle.type} vehicle`}
-                        className="w-16 h-16 object-cover rounded"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 bg-gray-700 rounded flex items-center justify-center text-gray-400">
-                        No Image
+
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <FontAwesomeIcon
+                          icon={faSearch}
+                          className="text-gray-400"
+                        />
                       </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {vehicle.type}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300 capitalize">
-                    {vehicle.relocation_size}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {vehicle.vehicle_model || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {vehicle.plate_number || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {vehicle.driving_category}
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {new Date(
-                      vehicle.created_date
-                    ).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex space-x-3">
-                      <button
-                        onClick={() => {
-                          setCurrentVehicle(vehicle);
-                          openModal(vehicle);
-                        }}
-                        className="text-blue-400 hover:text-blue-300 transition"
-                      >
-                        <FontAwesomeIcon icon={faEdit} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(vehicle.id)}
-                        className="text-blue-400 hover:text-blue-300 transition"
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
+                      <input
+                        type="text"
+                        placeholder="Search vehicles..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 pr-4 py-2 w-full text-gray-300 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      />
                     </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
-        <div className="flex items-center">
-          <span className="mr-2 text-gray-300">Rows per page:</span>
-          <select
-            value={vehiclesPerPage}
-            onChange={(e) =>
-              setVehiclesPerPage(Number(e.target.value))
-            }
-            className="border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
-          >
-            {[5, 10, 30, 50, 100].map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
+                    <button
+                      onClick={() => setIsFilterDrawerOpen(true)}
+                      className="py-2 bg-gray-700 px-4 rounded-lg text-white flex items-center justify-center hover:bg-gray-600 transition duration-200 w-full sm:w-auto"
+                    >
+                      <FontAwesomeIcon icon={faFilter} className="mr-2" />
+                      Filters
+                      {Object.values(activeFilters).flat().length > 0 && (
+                        <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-600 rounded-full">
+                          {Object.values(activeFilters).flat().length}
+                        </span>
+                      )}
+                    </button>
 
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.max(1, prev - 1))
-            }
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 hover:bg-gray-600 transition disabled:cursor-not-allowed"
-          >
-            Previous
-          </button>
-          <span className="px-4 py-2 bg-blue-600 text-white rounded-lg">
-            Page {currentPage}
-          </span>
-          <button
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            disabled={
-              currentPage * vehiclesPerPage >=
-              filteredAndSortedData.length
-            }
-            className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 hover:bg-gray-600 transition disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+                    <div className="relative">
+                      <button
+                        onClick={() =>
+                          setDownloadMenuVisible(!downloadMenuVisible)
+                        }
+                        className="py-2 bg-blue-600 px-4 rounded-lg text-white flex items-center justify-center hover:bg-blue-700 transition duration-200 w-full sm:w-auto"
+                      >
+                        <FontAwesomeIcon icon={faDownload} className="mr-2" />
+                        Export
+                      </button>
+                      {downloadMenuVisible && (
+                        <div className="absolute right-0 mt-2 bg-gray-800 text-gray-200 shadow-lg rounded-lg p-2 z-10 border border-gray-700 w-32">
+                          {Object.keys(handleDownload).map((format) => (
+                            <button
+                              key={format}
+                              onClick={() => {
+                                handleDownload[format]();
+                                setDownloadMenuVisible(false);
+                              }}
+                              className="block w-full px-4 py-2 text-left hover:bg-gray-700 rounded transition"
+                            >
+                              {format}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
+                    <button
+                      onClick={() => {
+                        setCurrentVehicle(null);
+                        openModal();
+                      }}
+                      className="py-2 bg-blue-600 px-4 rounded-lg text-white flex items-center justify-center hover:bg-blue-700 transition duration-200 w-full sm:w-auto"
+                    >
+                      <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                      Add Vehicle
+                    </button>
+                  </div>
+                </div>
 
+                <div className="w-full overflow-x-auto rounded-lg shadow-md border border-gray-700">
+                  <table
+                    id="vehicle-table"
+                    className="w-full text-sm text-left"
+                  >
+                    <thead className="text-xs uppercase bg-blue-600 text-white">
+                      <tr>
+                        <th className="px-6 py-3 rounded-tl-lg">#</th>
+                        <th className="px-6 py-3">Image</th>
+                        <th className="px-6 py-3">Type</th>
+                        <th className="px-6 py-3">Relocation Size</th>
+                        <th className="px-6 py-3">Vehicle Model</th>
+                        <th className="px-6 py-3">Plate Number</th>
+                        <th className="px-6 py-3">Driving Category</th>
+                        <th className="px-6 py-3">Status</th>
+                        <th className="px-6 py-3">Created Date</th>
+                        <th className="px-6 py-3 rounded-tr-lg">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentVehicles.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan="12"
+                            className="text-center py-8 text-gray-400 bg-gray-800"
+                          >
+                            <div className="flex flex-col items-center">
+                              <FontAwesomeIcon
+                                icon={faTruck}
+                                className="text-4xl mb-3 text-gray-600"
+                              />
+                              <p>No vehicles found matching your criteria</p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : (
+                        currentVehicles.map((vehicle, index) => (
+                          <tr
+                            key={vehicle.id}
+                            className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition duration-200"
+                          >
+                            <td className="px-6 py-4 text-gray-300">
+                              {index + 1}
+                            </td>
+                            <td className="px-6 py-4">
+                              {vehicle.image_base64 ? (
+                                <img
+                                  src={vehicle.image_base64}
+                                  alt={`${vehicle.type} vehicle`}
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                              ) : (
+                                <div className="w-16 h-16 bg-gray-700 rounded flex items-center justify-center text-gray-400">
+                                  No Image
+                                </div>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 text-gray-300">
+                              {vehicle.type}
+                            </td>
+                            <td className="px-6 py-4 text-gray-300 capitalize">
+                              {vehicle.relocation_size}
+                            </td>
+                            <td className="px-6 py-4 text-gray-300">
+                              {vehicle.vehicle_model || "N/A"}
+                            </td>
+                            <td className="px-6 py-4 text-gray-300">
+                              {vehicle.plate_number || "N/A"}
+                            </td>
+                            <td className="px-6 py-4 text-gray-300">
+                              {vehicle.driving_category}
+                            </td>
+                            <td className="px-6 py-4">
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  vehicle.status === "active"
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {vehicle.status === "active"
+                                  ? "Active"
+                                  : "Not Active"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-gray-300">
+                              {new Date(
+                                vehicle.created_date
+                              ).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex space-x-3">
+                                <button
+                                  onClick={() => {
+                                    setCurrentVehicle(vehicle);
+                                    openModal(vehicle);
+                                  }}
+                                  className="text-blue-400 hover:text-blue-300 transition"
+                                >
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(vehicle.id)}
+                                  className="text-blue-400 hover:text-blue-300 transition"
+                                >
+                                  <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+                  <div className="flex items-center">
+                    <span className="mr-2 text-gray-300">Rows per page:</span>
+                    <select
+                      value={vehiclesPerPage}
+                      onChange={(e) =>
+                        setVehiclesPerPage(Number(e.target.value))
+                      }
+                      className="border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    >
+                      {[5, 10, 30, 50, 100].map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(1, prev - 1))
+                      }
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 hover:bg-gray-600 transition disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <span className="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                      Page {currentPage}
+                    </span>
+                    <button
+                      onClick={() => setCurrentPage((prev) => prev + 1)}
+                      disabled={
+                        currentPage * vehiclesPerPage >=
+                        filteredAndSortedData.length
+                      }
+                      className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 hover:bg-gray-600 transition disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         {renderCharts()}
         {renderFilterDrawer()}
