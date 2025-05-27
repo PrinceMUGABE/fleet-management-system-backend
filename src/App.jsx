@@ -35,7 +35,6 @@ import Admin_Manage_Drivers from "./components/pages/admin/manage_drivers.jsx";
 import Customer_Layout from "./components/customer/Layout.jsx";
 import Customer_VehiclesDisplay from "./components/pages/customer/vehicles.jsx";
 import Customer_Map from "./components/pages/customer/map.jsx";
-import Admin_Manage_Relocations from "./components/pages/admin/manage_relocations.jsx";
 import Customer_Manage_Relocations from "./components/pages/customer/my_relocations.jsx";
 import Admin_Create_Relocation from "./components/pages/admin/create_relocation.jsx";
 import Admin_Manage_Feedbacks from "./components/pages/admin/manage_feedbacks.jsx";
@@ -54,6 +53,7 @@ import CommodityManagement from "./components/pages/admin/commodity_management.j
 import InventoryMovementHistory from "./components/pages/admin/inventory_movement_history.jsx";
 import WarehouseCommodityManagement from "./components/pages/admin/warehouse_commodity_management.jsx";
 import StorageCosts from "./components/pages/admin/manage_storage_costs.jsx";
+import Admin_OrderManagement from "./components/pages/admin/manage_orders.jsx";
 
 
 
@@ -94,7 +94,7 @@ const App = () => {
             <Route path="/admin/createUser" element={<CreateUser />} />
 
             <Route path="/admin/vehicles" element={<Admin_Manage_Vehicles />} />
-            <Route path="/admin/relocations" element={<Admin_Manage_Relocations />} />
+            <Route path="/admin/relocations" element={<Admin_OrderManagement />} />
             <Route path="/admin/createRelocation" element={<Admin_Create_Relocation />} />
 
 
