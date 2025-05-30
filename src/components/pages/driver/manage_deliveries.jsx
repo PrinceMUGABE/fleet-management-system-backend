@@ -68,7 +68,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-function Customer_Manage_Deliveries() {
+function Driver_Manage_Deliveries() {
   const [deliveryData, setDeliveryData] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
@@ -100,7 +100,7 @@ function Customer_Manage_Deliveries() {
   // Modified fetchDeliveries function
   const fetchDeliveries = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}customer/`, {
+      const res = await axios.get(`${BASE_URL}my-assigned/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("Deliveries fetched:", res.data);
@@ -327,7 +327,7 @@ const renderModal = () => {
                 className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 required
               >
-                {/* <option value="in_process">In Process</option> */}
+                <option value="in_process">In Process</option>
                 <option value="completed">Completed</option>
               </select>
             </div>
@@ -1035,4 +1035,4 @@ const handleAddUpdateDelivery = async (e) => {
   );
 }
 
-export default Customer_Manage_Deliveries;
+export default Driver_Manage_Deliveries;

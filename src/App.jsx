@@ -195,6 +195,9 @@ const App = () => {
 
             <Route path="/driver/profile" element={<DriverProfile />} />
 
+            <Route path="/driver/orders" element={<Customer_OrderManagement />} />
+            <Route path="/driver/deliveries" element={<Customer_Manage_Deliveries />} />
+
             <Route path="/driver/relocations" element={<Driver_Manage_Relocations />} />
      
           </Route>

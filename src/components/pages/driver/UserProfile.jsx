@@ -184,7 +184,7 @@ function DriverProfile() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-800">
         <div className="flex flex-col items-center justify-center gap-3">
-          <div className="animate-spin text-red-600">
+          <div className="animate-spin text-blue-600">
             <Loader size={32} />
           </div>
           <p className="text-white text-lg">Loading profile data...</p>
@@ -197,7 +197,7 @@ function DriverProfile() {
     <section className="bg-gray-800 min-h-screen flex items-center justify-center px-4 py-8">
       <div className="container mx-auto max-w-4xl z-10">
         <div className="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
-          <div className="p-6 bg-red-600 text-white">
+          <div className="p-6 bg-blue-600 text-white">
             <h2 className="text-2xl font-bold flex items-center gap-2">
               <User className="h-6 w-6" />
               Driver Profile
@@ -213,7 +213,7 @@ function DriverProfile() {
           )}
 
           {errors.general && (
-            <div className="mx-6 mt-6 p-4 bg-red-900 text-red-100 rounded-lg flex items-center gap-2">
+            <div className="mx-6 mt-6 p-4 bg-blue-900 text-blue-100 rounded-lg flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
               {errors.general}
             </div>
@@ -228,7 +228,7 @@ function DriverProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <Phone size={20} />
                       </div>
                       <div>
@@ -240,7 +240,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <Mail size={20} />
                       </div>
                       <div>
@@ -252,7 +252,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <User size={20} />
                       </div>
                       <div>
@@ -264,7 +264,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <User size={20} />
                       </div>
                       <div>
@@ -276,7 +276,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <User size={20} />
                       </div>
                       <div>
@@ -292,7 +292,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <MapPin size={20} />
                       </div>
                       <div>
@@ -304,7 +304,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <Award size={20} />
                       </div>
                       <div>
@@ -316,7 +316,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <Calendar size={20} />
                       </div>
                       <div>
@@ -336,7 +336,7 @@ function DriverProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <FileText size={20} />
                       </div>
                       <div>
@@ -348,7 +348,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <FileText size={20} />
                       </div>
                       <div>
@@ -360,7 +360,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all col-span-1 md:col-span-2">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <Truck size={20} />
                       </div>
                       <div>
@@ -370,7 +370,7 @@ function DriverProfile() {
                     {driverData.driving_categories && driverData.driving_categories.length > 0 ? (
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
                         {driverData.driving_categories.map(category => (
-                          <span key={category} className="bg-red-900 text-white px-3 py-1 rounded-full text-sm inline-block text-center">
+                          <span key={category} className="bg-blue-900 text-white px-3 py-1 rounded-full text-sm inline-block text-center">
                             Category {category}
                           </span>
                         ))}
@@ -388,7 +388,7 @@ function DriverProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <ToggleLeft size={20} />
                       </div>
                       <div>
@@ -407,16 +407,16 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <Shield size={20} />
                       </div>
                       <div>
                         <h3 className="text-gray-400 text-sm">Account Status</h3>
                         <div className={`mt-1 px-3 py-1 rounded-full inline-flex items-center gap-2 ${driverData.status === 'approved'
                             ? 'bg-green-700 text-green-100'
-                            : 'bg-red-700 text-red-100'
+                            : 'bg-blue-700 text-blue-100'
                           }`}>
-                          <span className={`w-2 h-2 rounded-full ${driverData.status === 'approved' ? 'bg-green-300' : 'bg-red-300'
+                          <span className={`w-2 h-2 rounded-full ${driverData.status === 'approved' ? 'bg-green-300' : 'bg-blue-300'
                             }`}></span>
                           <span className="font-medium capitalize">{driverData.status}</span>
                         </div>
@@ -425,9 +425,9 @@ function DriverProfile() {
                   </div>
 
                   {/* Document Uploads Section */}
-                  <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
+                  {/* <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <FileText size={20} />
                       </div>
                       <div>
@@ -438,7 +438,7 @@ function DriverProfile() {
                             Document Uploaded
                           </p>
                         ) : (
-                          <p className="text-red-400 mt-2 flex items-center gap-1">
+                          <p className="text-blue-400 mt-2 flex items-center gap-1">
                             <AlertCircle size={16} />
                             No Document Uploaded
                           </p>
@@ -449,7 +449,7 @@ function DriverProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg group hover:border-red-500 transition-all">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-600 rounded-full text-white">
+                      <div className="p-2 bg-blue-600 rounded-full text-white">
                         <FileText size={20} />
                       </div>
                       <div>
@@ -460,20 +460,20 @@ function DriverProfile() {
                             Document Uploaded
                           </p>
                         ) : (
-                          <p className="text-red-400 mt-2 flex items-center gap-1">
+                          <p className="text-blue-400 mt-2 flex items-center gap-1">
                             <AlertCircle size={16} />
                             No Document Uploaded
                           </p>
                         )}
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={handleEditClick}
-                    className="px-6 py-3 flex items-center gap-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                    className="px-6 py-3 flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                   >
                     <Edit size={18} />
                     Edit Profile
@@ -503,12 +503,12 @@ function DriverProfile() {
                         name="phone_number"
                         value={formData.phone_number}
                         onChange={handleChange}
-                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.phone_number ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600`}
+                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.phone_number ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600`}
                         required
                       />
                     </div>
                     {errors.phone_number && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.phone_number}
                       </p>
@@ -532,11 +532,11 @@ function DriverProfile() {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.email ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600`}
+                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.email ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600`}
                       />
                     </div>
                     {errors.email && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.email}
                       </p>
@@ -560,11 +560,11 @@ function DriverProfile() {
                         name="first_name"
                         value={formData.first_name}
                         onChange={handleChange}
-                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.first_name ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600`}
+                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.first_name ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600`}
                       />
                     </div>
                     {errors.first_name && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.first_name}
                       </p>
@@ -588,11 +588,11 @@ function DriverProfile() {
                         name="last_name"
                         value={formData.last_name}
                         onChange={handleChange}
-                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.last_name ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600`}
+                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.last_name ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600`}
                       />
                     </div>
                     {errors.last_name && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.last_name}
                       </p>
@@ -615,7 +615,7 @@ function DriverProfile() {
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
-                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.gender ? 'border-red-500' : 'border-gray-700'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-red-600`}
+                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.gender ? 'border-red-500' : 'border-gray-700'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-600`}
                       >
                         <option value="">Select Gender</option>
                         <option value="male">Male</option>
@@ -624,14 +624,14 @@ function DriverProfile() {
                       </select>
                     </div>
                     {errors.gender && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.gender}
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <label
                       className="block text-white text-sm font-medium"
                       htmlFor="residence"
@@ -648,16 +648,16 @@ function DriverProfile() {
                         name="residence"
                         value={formData.residence}
                         onChange={handleChange}
-                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.residence ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600`}
+                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.residence ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600`}
                       />
                     </div>
                     {errors.residence && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.residence}
                       </p>
                     )}
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* License Information Edit Section */}
@@ -682,11 +682,11 @@ function DriverProfile() {
                         name="national_id_number"
                         value={formData.national_id_number}
                         onChange={handleChange}
-                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.national_id_number ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600`}
+                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.national_id_number ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600`}
                       />
                     </div>
                     {errors.national_id_number && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.national_id_number}
                       </p>
@@ -710,11 +710,11 @@ function DriverProfile() {
                         name="driving_license_number"
                         value={formData.driving_license_number}
                         onChange={handleChange}
-                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.driving_license_number ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600`}
+                        className={`w-full p-3 pl-10 bg-gray-800 border ${errors.driving_license_number ? 'border-red-500' : 'border-gray-700'} rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600`}
                       />
                     </div>
                     {errors.driving_license_number && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.driving_license_number}
                       </p>
@@ -729,11 +729,11 @@ function DriverProfile() {
                       {availableDrivingCategories.map(category => (
                         <div
                           key={category}
-                          className={`p-2 border ${formData.driving_categories.includes(category) ? 'border-red-500 bg-red-900/30' : 'border-gray-700 bg-gray-800'} rounded-md cursor-pointer hover:border-red-400 transition-all`}
+                          className={`p-2 border ${formData.driving_categories.includes(category) ? 'border-red-500 bg-blue-900/30' : 'border-gray-700 bg-gray-800'} rounded-md cursor-pointer hover:border-red-400 transition-all`}
                           onClick={() => handleCategoryChange(category)}
                         >
                           <div className="flex items-center gap-2">
-                            <div className={`w-4 h-4 rounded border ${formData.driving_categories.includes(category) ? 'bg-red-500 border-red-500' : 'border-gray-500'} flex items-center justify-center`}>
+                            <div className={`w-4 h-4 rounded border ${formData.driving_categories.includes(category) ? 'bg-blue-500 border-red-500' : 'border-gray-500'} flex items-center justify-center`}>
                               {formData.driving_categories.includes(category) && (
                                 <CheckCircle className="h-3 w-3 text-white" />
                               )}
@@ -744,7 +744,7 @@ function DriverProfile() {
                       ))}
                     </div>
                     {errors.driving_categories && (
-                      <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                      <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                         <AlertCircle size={14} />
                         {errors.driving_categories}
                       </p>
@@ -777,10 +777,10 @@ function DriverProfile() {
                     </div>
 
                     <div
-                      className={`p-3 border rounded-md cursor-pointer transition-all flex items-center gap-3 ${formData.availability_status === 'inactive' ? 'border-red-500 bg-red-900/30' : 'border-gray-700 bg-gray-800 hover:border-gray-500'}`}
+                      className={`p-3 border rounded-md cursor-pointer transition-all flex items-center gap-3 ${formData.availability_status === 'inactive' ? 'border-red-500 bg-blue-900/30' : 'border-gray-700 bg-gray-800 hover:border-gray-500'}`}
                       onClick={() => setFormData({ ...formData, availability_status: 'inactive' })}
                     >
-                      <div className={`w-5 h-5 rounded-full ${formData.availability_status === 'inactive' ? 'bg-red-500' : 'bg-gray-700'} flex items-center justify-center`}>
+                      <div className={`w-5 h-5 rounded-full ${formData.availability_status === 'inactive' ? 'bg-blue-500' : 'bg-gray-700'} flex items-center justify-center`}>
                         {formData.availability_status === 'inactive' && (
                           <CheckCircle className="h-3 w-3 text-white" />
                         )}
@@ -792,7 +792,7 @@ function DriverProfile() {
                     </div>
                   </div>
                   {errors.availability_status && (
-                    <p className="mt-1 text-red-500 text-sm flex items-center gap-1">
+                    <p className="mt-1 text-blue-500 text-sm flex items-center gap-1">
                       <AlertCircle size={14} />
                       {errors.availability_status}
                     </p>
@@ -811,7 +811,7 @@ function DriverProfile() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="px-6 py-3 flex items-center gap-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="px-6 py-3 flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isLoading ? (
                       <>

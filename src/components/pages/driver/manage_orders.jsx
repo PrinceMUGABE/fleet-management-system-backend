@@ -150,7 +150,7 @@ const AvailabilityBadge = ({ status }) => {
   );
 };
 
-function Customer_OrderManagement() {
+function Driver_OrderManagement() {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -1719,4 +1719,4 @@ function Customer_OrderManagement() {
   );
 }
 
-export default Customer_OrderManagement;
+export default Driver_OrderManagement;

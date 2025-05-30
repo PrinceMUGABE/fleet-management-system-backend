@@ -24,6 +24,7 @@ import {
   faCalendarAlt,
   faUser,
   faMapMarkerAlt,
+  faTruck,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   ResponsiveContainer,
@@ -54,11 +55,11 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-4 text-red-100 bg-red-900 rounded-lg">
+        <div className="p-4 text-blue-100 bg-gray-900 rounded-lg">
           <h3 className="font-semibold">Something went wrong</h3>
           <button
             onClick={() => window.location.reload()}
-            className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+            className="mt-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
           >
             Refresh Page
           </button>
@@ -71,7 +72,7 @@ class ErrorBoundary extends React.Component {
 
 function Customer_Manage_Feedbacks() {
   const [feedbackData, setFeedbackData] = useState([]);
-  const [relocations, setRelocations] = useState([]);
+  const [orders, setorders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [feedbacksPerPage, setFeedbacksPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
@@ -90,7 +91,7 @@ function Customer_Manage_Feedbacks() {
   const [filterConfig, setFilterConfig] = useState({
     rating: [],
     dateRange: { start: "", end: "" },
-    relocation: "",
+    order: "",
   });
   const [activeFilters, setActiveFilters] = useState(0);
   const [summaryStats, setSummaryStats] = useState({
@@ -102,7 +103,7 @@ function Customer_Manage_Feedbacks() {
 
   const COLORS = ["#FF6B6B", "#4ECDC4", "#FFD166", "#F9F871", "#A58FE3"];
   const BASE_URL = "http://127.0.0.1:8000/feedback/";
-  const RELOCATIONS_URL = "http://127.0.0.1:8000/relocation/user/";
+  const orderS_URL = "http://127.0.0.1:8000/order/user/";
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -115,7 +116,7 @@ function Customer_Manage_Feedbacks() {
       return;
     }
     handleFetch();
-    fetchRelocations();
+    fetchorders();
   }, [navigate]);
 
   useEffect(() => {
@@ -150,7 +151,7 @@ function Customer_Manage_Feedbacks() {
 
   const handleFetch = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}my-feedbacks/`, {
+      const res = await axios.get(`${BASE_URL}customer/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setFeedbackData(Array.isArray(res.data) ? res.data : []);
@@ -159,14 +160,15 @@ function Customer_Manage_Feedbacks() {
     }
   };
 
-  const fetchRelocations = async () => {
+  const fetchorders = async () => {
     try {
-      const res = await axios.get(RELOCATIONS_URL, {
+      const res = await axios.get(orderS_URL, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setRelocations(Array.isArray(res.data) ? res.data : []);
+      console.log("Fetched orders:", res.data);
+      setorders(Array.isArray(res.data.data) ? res.data.data : []);
     } catch (err) {
-      console.error("Error fetching relocations:", err);
+      console.error("Error fetching orders:", err);
     }
   };
 
@@ -222,7 +224,7 @@ function Customer_Manage_Feedbacks() {
       const feedbackData = {
         rating: parseInt(e.target.rating.value),
         comment: e.target.comment.value,
-        relocation: e.target.relocation.value,
+        order: e.target.order.value,
       };
 
       if (currentFeedback) {
@@ -276,7 +278,7 @@ function Customer_Manage_Feedbacks() {
         <FontAwesomeIcon
           key={i}
           icon={faStar}
-          className={i < rating ? "text-yellow-400" : "text-gray-500"}
+          className={i < rating ? "text-yellow-400" : "text-blue-500"}
         />
       );
     }
@@ -294,12 +296,12 @@ function Customer_Manage_Feedbacks() {
 
   const getSortIcon = (column) => {
     if (sortConfig.key !== column) {
-      return <FontAwesomeIcon icon={faSort} className="ml-1 text-gray-500" />;
+      return <FontAwesomeIcon icon={faSort} className="ml-1 text-blue-500" />;
     }
     return sortConfig.direction === "ascending" ? (
-      <FontAwesomeIcon icon={faSortUp} className="ml-1 text-red-400" />
+      <FontAwesomeIcon icon={faSortUp} className="ml-1 text-blue-400" />
     ) : (
-      <FontAwesomeIcon icon={faSortDown} className="ml-1 text-red-400" />
+      <FontAwesomeIcon icon={faSortDown} className="ml-1 text-blue-400" />
     );
   };
 
@@ -325,7 +327,7 @@ function Customer_Manage_Feedbacks() {
       let activeCount = 0;
       if (newConfig.rating.length > 0) activeCount++;
       if (newConfig.dateRange.start || newConfig.dateRange.end) activeCount++;
-      if (newConfig.relocation) activeCount++;
+      if (newConfig.order) activeCount++;
 
       setActiveFilters(activeCount);
       return newConfig;
@@ -336,7 +338,7 @@ function Customer_Manage_Feedbacks() {
     setFilterConfig({
       rating: [],
       dateRange: { start: "", end: "" },
-      relocation: "",
+      order: "",
     });
     setActiveFilters(0);
   };
@@ -377,11 +379,11 @@ function Customer_Manage_Feedbacks() {
       );
     }
 
-    if (filterConfig.relocation) {
+    if (filterConfig.order) {
       filteredData = filteredData.filter(
         (feedback) =>
-          feedback.relocation &&
-          feedback.relocation.id === parseInt(filterConfig.relocation)
+          feedback.order &&
+          feedback.order.id === parseInt(filterConfig.order)
       );
     }
 
@@ -394,9 +396,9 @@ function Customer_Manage_Feedbacks() {
         if (sortConfig.key === "user") {
           aValue = a.created_by ? a.created_by.phone_number : "";
           bValue = b.created_by ? b.created_by.phone_number : "";
-        } else if (sortConfig.key === "relocation") {
-          aValue = a.relocation ? a.relocation.start_point : "";
-          bValue = b.relocation ? b.relocation.start_point : "";
+        } else if (sortConfig.key === "order") {
+          aValue = a.order ? a.order.start_point : "";
+          bValue = b.order ? b.order.start_point : "";
         } else {
           aValue = a[sortConfig.key];
           bValue = b[sortConfig.key];
@@ -453,20 +455,20 @@ function Customer_Manage_Feedbacks() {
       })
     );
 
-    // Relocation ratings
-    const relocationRatings = {};
+    // order ratings
+    const orderRatings = {};
     feedbackData.forEach((feedback) => {
-      if (feedback.relocation) {
-        const relocationName = `${feedback.relocation.start_point} to ${feedback.relocation.end_point}`;
-        if (!relocationRatings[relocationName]) {
-          relocationRatings[relocationName] = { total: 0, count: 0 };
+      if (feedback.order) {
+        const orderName = `${feedback.order.origin} to ${feedback.order.warehouse_detail?.location}`;
+        if (!orderRatings[orderName]) {
+          orderRatings[orderName] = { total: 0, count: 0 };
         }
-        relocationRatings[relocationName].total += feedback.rating;
-        relocationRatings[relocationName].count += 1;
+        orderRatings[orderName].total += feedback.rating;
+        orderRatings[orderName].count += 1;
       }
     });
 
-    const relocationData = Object.entries(relocationRatings)
+    const orderData = Object.entries(orderRatings)
       .map(([name, data]) => ({
         name: name.length > 15 ? name.substring(0, 15) + "..." : name,
         fullName: name,
@@ -474,18 +476,18 @@ function Customer_Manage_Feedbacks() {
         count: data.count,
       }))
       .sort((a, b) => b.count - a.count)
-      .slice(0, 5); // Top 5 relocations
+      .slice(0, 5); // Top 5 orders
 
     return (
       <div className="w-full lg:w-1/3 space-y-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-gray-900 p-4 rounded-lg shadow-lg border border-gray-800">
-            <h3 className="text-xs uppercase font-semibold text-gray-500 mb-1">
+            <h3 className="text-xs uppercase font-semibold text-blue-500 mb-1">
               Average Rating
             </h3>
             <div className="flex items-center">
-              <span className="text-2xl font-bold text-red-400">
+              <span className="text-2xl font-bold text-blue-400">
                 {summaryStats.averageRating}
               </span>
               <div className="ml-2">
@@ -495,10 +497,10 @@ function Customer_Manage_Feedbacks() {
           </div>
 
           <div className="bg-gray-900 p-4 rounded-lg shadow-lg border border-gray-800">
-            <h3 className="text-xs uppercase font-semibold text-gray-500 mb-1">
+            <h3 className="text-xs uppercase font-semibold text-blue-500 mb-1">
               Total Feedbacks
             </h3>
-            <span className="text-2xl font-bold text-red-400">
+            <span className="text-2xl font-bold text-blue-400">
               {summaryStats.totalFeedbacks}
             </span>
           </div>
@@ -506,7 +508,7 @@ function Customer_Manage_Feedbacks() {
 
         <ErrorBoundary>
           <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800 h-72">
-            <h3 className="text-sm font-semibold mb-4 text-red-400 flex items-center">
+            <h3 className="text-sm font-semibold mb-4 text-blue-400 flex items-center">
               <FontAwesomeIcon icon={faStar} className="mr-2" />
               Rating Distribution
             </h3>
@@ -551,7 +553,7 @@ function Customer_Manage_Feedbacks() {
 
         <ErrorBoundary>
           <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800 h-72">
-            <h3 className="text-sm font-semibold mb-4 text-red-400 flex items-center">
+            <h3 className="text-sm font-semibold mb-4 text-blue-400 flex items-center">
               <FontAwesomeIcon icon={faChartPie} className="mr-2" />
               Average Rating Trend
             </h3>
@@ -588,12 +590,12 @@ function Customer_Manage_Feedbacks() {
 
         <ErrorBoundary>
           <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800 h-80">
-            <h3 className="text-sm font-semibold mb-4 text-red-400 flex items-center">
-              <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
-              Top Relocation Routes (Avg Rating)
+            <h3 className="text-sm font-semibold mb-4 text-blue-400 flex items-center">
+              <FontAwesomeIcon icon={faTruck} className="mr-2" />
+              Top order Feedbacks 
             </h3>
             <ResponsiveContainer>
-              <BarChart data={relocationData} layout="vertical">
+              <BarChart data={orderData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                 <XAxis
                   type="number"
@@ -647,7 +649,7 @@ function Customer_Manage_Feedbacks() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Rating filters */}
           <div>
-            <h4 className="text-gray-300 font-semibold mb-2 flex items-center">
+            <h4 className="text-blue-300 font-semibold mb-2 flex items-center">
               <FontAwesomeIcon icon={faStar} className="mr-2 text-yellow-400" />
               Rating
             </h4>
@@ -658,8 +660,8 @@ function Customer_Manage_Feedbacks() {
                   onClick={() => handleFilterChange("rating", rating)}
                   className={`px-3 py-1 rounded-full flex items-center ${
                     filterConfig.rating.includes(rating)
-                      ? "bg-red-600 text-white"
-                      : "bg-gray-700 text-gray-300"
+                      ? "bg-gray-600 text-white"
+                      : "bg-gray-700 text-blue-300"
                   }`}
                 >
                   {rating}{" "}
@@ -674,7 +676,7 @@ function Customer_Manage_Feedbacks() {
 
           {/* Date range */}
           <div>
-            <h4 className="text-gray-300 font-semibold mb-2 flex items-center">
+            <h4 className="text-blue-300 font-semibold mb-2 flex items-center">
               <FontAwesomeIcon
                 icon={faCalendarAlt}
                 className="mr-2 text-blue-400"
@@ -683,48 +685,48 @@ function Customer_Manage_Feedbacks() {
             </h4>
             <div className="space-y-2">
               <div>
-                <label className="text-xs text-gray-400 block mb-1">From</label>
+                <label className="text-xs text-blue-400 block mb-1">From</label>
                 <input
                   type="date"
                   value={filterConfig.dateRange.start}
                   onChange={(e) =>
                     handleFilterChange("dateRange", { start: e.target.value })
                   }
-                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-gray-300 text-sm"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-blue-300 text-sm"
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-400 block mb-1">To</label>
+                <label className="text-xs text-blue-400 block mb-1">To</label>
                 <input
                   type="date"
                   value={filterConfig.dateRange.end}
                   onChange={(e) =>
                     handleFilterChange("dateRange", { end: e.target.value })
                   }
-                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-gray-300 text-sm"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-blue-300 text-sm"
                 />
               </div>
             </div>
           </div>
 
-          {/* Relocation filter */}
+          {/* order filter */}
           <div>
-            <h4 className="text-gray-300 font-semibold mb-2 flex items-center">
+            <h4 className="text-blue-300 font-semibold mb-2 flex items-center">
               <FontAwesomeIcon
-                icon={faMapMarkerAlt}
+                icon={faTruck}
                 className="mr-2 text-green-400"
               />
-              Relocation Route
+              order Route
             </h4>
             <select
-              value={filterConfig.relocation}
-              onChange={(e) => handleFilterChange("relocation", e.target.value)}
-              className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-gray-300"
+              value={filterConfig.order}
+              onChange={(e) => handleFilterChange("order", e.target.value)}
+              className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-blue-300"
             >
-              <option value="">All Routes</option>
-              {relocations.map((relocation) => (
-                <option key={relocation.id} value={relocation.id}>
-                  {relocation.start_point} to {relocation.end_point}
+              <option value="">All Orders</option>
+              {orders.map((order) => (
+                <option key={order.id} value={order.id}>
+                  {order.commodity_detail.name} (from: {order.origin}  to {order.warehouse_detail.location}) 
                 </option>
               ))}
             </select>
@@ -734,7 +736,7 @@ function Customer_Manage_Feedbacks() {
           <div className="flex items-end">
             <button
               onClick={resetFilters}
-              className="px-4 py-2 bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition w-full"
+              className="px-4 py-2 bg-gray-700 text-blue-300 rounded hover:bg-gray-600 transition w-full"
             >
               Reset Filters
             </button>
@@ -758,13 +760,13 @@ function Customer_Manage_Feedbacks() {
           onClick={() => setIsModalOpen(false)}
         ></div>
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 z-50 w-96 border border-gray-800">
-          <h2 className="text-xl font-bold mb-4 text-red-500">
+          <h2 className="text-xl font-bold mb-4 text-blue-500">
             {currentFeedback ? "Update Feedback" : "Add New Feedback"}
           </h2>
           <form onSubmit={handleAddUpdateFeedback}>
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-300 mb-2">Rating (1-5)</label>
+                <label className="block text-blue-300 mb-2">Rating (1-5)</label>
                 <div className="flex items-center space-x-1 mb-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <div key={star} className="text-2xl text-yellow-400">
@@ -776,7 +778,7 @@ function Customer_Manage_Feedbacks() {
                   name="rating"
                   defaultValue={currentFeedback?.rating || 5}
                   required
-                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-blue-300"
                 >
                   <option value={1}>1 Star</option>
                   <option value={2}>2 Stars</option>
@@ -786,28 +788,28 @@ function Customer_Manage_Feedbacks() {
                 </select>
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Relocation</label>
+                <label className="block text-blue-300 mb-2">order</label>
                 <select
-                  name="relocation"
-                  defaultValue={currentFeedback?.relocation?.id || ""}
+                  name="order"
+                  defaultValue={currentFeedback?.order?.id || ""}
                   required
-                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-blue-300"
                 >
-                  {relocations.map((relocation) => (
-                    <option key={relocation.id} value={relocation.id}>
-                      {relocation.origin_district}-{relocation.origin_sector} to {relocation.destination_district}-{relocation.destination_sector}
+                  {orders.map((order) => (
+                    <option key={order.id} value={order.id}>
+                      From: {order.origin} to {order.warehouse_detail?.location}, Commodity: {order.commodity_detail?.name}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Comment</label>
+                <label className="block text-blue-300 mb-2">Comment</label>
                 <textarea
                   name="comment"
                   defaultValue={currentFeedback?.comment || ""}
                   required
                   rows={4}
-                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-300"
+                  className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-blue-300"
                 ></textarea>
               </div>
             </div>
@@ -824,7 +826,7 @@ function Customer_Manage_Feedbacks() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
               >
                 {currentFeedback ? "Update" : "Add"}
               </button>
@@ -853,17 +855,17 @@ function Customer_Manage_Feedbacks() {
           onClick={() => setIsCommentModalOpen(false)}
         ></div>
         <div className="bg-gray-900 rounded-lg shadow-xl p-6 z-50 w-full max-w-lg border border-gray-800">
-          <h2 className="text-xl font-bold mb-4 text-red-500 flex items-center">
+          <h2 className="text-xl font-bold mb-4 text-blue-500 flex items-center">
             <FontAwesomeIcon icon={faComment} className="mr-2" />
             Feedback Comment
           </h2>
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 max-h-96 overflow-y-auto">
-            <p className="text-gray-300 whitespace-pre-wrap">{commentToView}</p>
+            <p className="text-blue-300 whitespace-pre-wrap">{commentToView}</p>
           </div>
           <div className="flex justify-end mt-6">
             <button
               onClick={() => setIsCommentModalOpen(false)}
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
             >
               Close
             </button>
@@ -880,7 +882,7 @@ function Customer_Manage_Feedbacks() {
           className={`p-4 mb-4 rounded-lg ${
             messageType === "success"
               ? "bg-green-800 text-green-100"
-              : "bg-red-800 text-red-100"
+              : "bg-gray-800 text-blue-100"
           }`}
         >
           {message}
@@ -890,7 +892,7 @@ function Customer_Manage_Feedbacks() {
       <div className="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-6">
         <div className="w-full lg:w-2/3 space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-            <h1 className="text-2xl font-bold text-red-400">
+            <h1 className="text-2xl font-bold text-blue-400">
               Manage Feedbacks
             </h1>
 
@@ -898,12 +900,12 @@ function Customer_Manage_Feedbacks() {
               <div className="relative">
                 <button
                   onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-                  className="flex items-center px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
+                  className="flex items-center px-4 py-2 text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition"
                 >
                   <FontAwesomeIcon icon={faFilter} className="mr-2" />
                   Filters
                   {activeFilters > 0 && (
-                    <span className="ml-2 px-2 py-0.5 bg-red-500 text-white text-xs rounded-full">
+                    <span className="ml-2 px-2 py-0.5 bg-gray-500 text-white text-xs rounded-full">
                       {activeFilters}
                     </span>
                   )}
@@ -914,14 +916,14 @@ function Customer_Manage_Feedbacks() {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Search feedbacks..."
+                    placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="px-4 py-2 bg-gray-800 rounded-lg pr-10 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent w-full"
+                    className="px-4 py-2 bg-gray-800 text-white rounded-lg pr-10 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
                   />
                   <FontAwesomeIcon
                     icon={faSearch}
-                    className="absolute right-3 top-3 text-gray-400"
+                    className="absolute right-3 top-3 text-blue-400"
                   />
                 </div>
               </div>
@@ -929,7 +931,7 @@ function Customer_Manage_Feedbacks() {
               <div className="relative">
                 <button
                   onClick={() => setDownloadMenuVisible(!downloadMenuVisible)}
-                  className="flex items-center px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
+                  className="flex items-center text-white px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
                 >
                   <FontAwesomeIcon icon={faDownload} className="mr-2" />
                   Export
@@ -945,7 +947,7 @@ function Customer_Manage_Feedbacks() {
                               handler();
                               setDownloadMenuVisible(false);
                             }}
-                            className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700"
+                            className="block w-full text-left px-4 py-2 text-blue-300 hover:bg-gray-700"
                           >
                             Export as {format}
                           </button>
@@ -958,10 +960,10 @@ function Customer_Manage_Feedbacks() {
 
               <button
                 onClick={() => openModal()}
-                className="flex items-center px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition"
+                className="flex items-center px-4 py-2 text-white bg-gray-600 rounded-lg hover:bg-gray-700 transition"
               >
                 <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                Add Feedback
+                Add New
               </button>
             </div>
           </div>
@@ -972,7 +974,7 @@ function Customer_Manage_Feedbacks() {
           <div className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 overflow-hidden">
             <div className="overflow-x-auto">
               <table id="feedback-table" className="w-full text-left">
-                <thead className="bg-gray-800 text-gray-400 text-xs uppercase">
+                <thead className="bg-gray-800 text-blue-400 text-xs uppercase">
                   <tr>
                     <th
                       className="p-4 cursor-pointer"
@@ -986,17 +988,17 @@ function Customer_Manage_Feedbacks() {
                     >
                       Comment {getSortIcon("comment")}
                     </th>
-                    {/* <th
+                    <th
                       className="p-4 cursor-pointer"
                       onClick={() => requestSort("user")}
                     >
-                      User {getSortIcon("user")}
-                    </th> */}
+                      Created By {getSortIcon("user")}
+                    </th>
                     <th
                       className="p-4 cursor-pointer"
-                      onClick={() => requestSort("relocation")}
+                      onClick={() => requestSort("order")}
                     >
-                      Relocation {getSortIcon("relocation")}
+                      order {getSortIcon("order")}
                     </th>
                     <th
                       className="p-4 cursor-pointer"
@@ -1007,7 +1009,7 @@ function Customer_Manage_Feedbacks() {
                     <th className="p-4">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="text-gray-300">
+                <tbody className="text-blue-300">
                   {currentFeedbacks.length > 0 ? (
                     currentFeedbacks.map((feedback) => (
                       <tr
@@ -1026,32 +1028,34 @@ function Customer_Manage_Feedbacks() {
                                 onClick={() =>
                                   openCommentModal(feedback.comment)
                                 }
-                                className="ml-2 text-red-400 hover:text-red-300"
+                                className="ml-2 text-blue-400 hover:text-blue-300"
                               >
                                 <FontAwesomeIcon icon={faEye} />
                               </button>
                             )}
                           </div>
                         </td>
-                        {/* <td className="p-4">
+                        <td className="p-4">
                           <div className="flex flex-col">
                             <span className="font-medium">
                               {feedback.created_by?.phone_number || "N/A"}
                             </span>
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-blue-400">
                               {feedback.created_by?.email || ""}
                             </span>
                           </div>
-                        </td> */}
+                        </td>
                         <td className="p-4">
-                          {feedback.relocation ? (
+                          {feedback.order ? (
                             <div className="flex flex-col">
                               <span className="font-medium">
-                                {feedback.relocation.origin_district},{feedback.relocation.origin_sector}
-                                <p className="text-red-800">to</p>
+                                {feedback.order.commodity_detail?.name || "N/A"}
                               </span>
-                              <span className="font-medium">
-                                {feedback.relocation.destination_district},{feedback.relocation.destination_sector}
+                              <span className="text-xs text-blue-400">
+                                From: {feedback.order.origin}
+                              </span>
+                              <span className="text-xs text-blue-400">
+                                To: {feedback.order.warehouse_detail?.location || "N/A"}
                               </span>
                             </div>
                           ) : (
@@ -1072,7 +1076,7 @@ function Customer_Manage_Feedbacks() {
                             </button>
                             <button
                               onClick={() => handleDelete(feedback.id)}
-                              className="text-red-400 hover:text-red-300"
+                              className="text-blue-400 hover:text-blue-300"
                               title="Delete"
                             >
                               <FontAwesomeIcon icon={faTrash} />
@@ -1083,7 +1087,7 @@ function Customer_Manage_Feedbacks() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="p-4 text-center text-gray-400">
+                      <td colSpan="6" className="p-4 text-center text-blue-400">
                         No feedbacks found
                       </td>
                     </tr>
@@ -1093,7 +1097,7 @@ function Customer_Manage_Feedbacks() {
             </div>
 
             <div className="bg-gray-800 py-3 px-4 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
-              <div className="text-gray-400 mb-2 md:mb-0">
+              <div className="text-blue-400 mb-2 md:mb-0">
                 Showing{" "}
                 <span className="font-medium text-white">
                   {filteredData.length > 0
@@ -1121,7 +1125,7 @@ function Customer_Manage_Feedbacks() {
                     setFeedbacksPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="bg-gray-700 border border-gray-600 text-gray-300 px-3 py-1 rounded mr-2"
+                  className="bg-gray-700 border border-gray-600 text-blue-300 px-3 py-1 rounded mr-2"
                 >
                   <option value={5}>5</option>
                   <option value={10}>10</option>
@@ -1137,8 +1141,8 @@ function Customer_Manage_Feedbacks() {
                         disabled={currentPage === 1}
                         className={`px-3 py-1 rounded ${
                           currentPage === 1
-                            ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                            ? "bg-gray-700 text-blue-500 cursor-not-allowed"
+                            : "bg-gray-700 text-blue-300 hover:bg-gray-600"
                         }`}
                       >
                         Prev
@@ -1164,7 +1168,7 @@ function Customer_Manage_Feedbacks() {
                               className={`px-3 py-1 rounded ${
                                 currentPage === pageNum
                                   ? "bg-blue-600 text-white"
-                                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                                  : "bg-gray-700 text-blue-300 hover:bg-gray-600"
                               }`}
                             >
                               {pageNum}
@@ -1182,8 +1186,8 @@ function Customer_Manage_Feedbacks() {
                         disabled={currentPage === totalPages}
                         className={`px-3 py-1 rounded ${
                           currentPage === totalPages
-                            ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                            ? "bg-gray-700 text-blue-500 cursor-not-allowed"
+                            : "bg-gray-700 text-blue-300 hover:bg-gray-600"
                         }`}
                       >
                         Next
@@ -1206,9 +1210,6 @@ function Customer_Manage_Feedbacks() {
     </div>
   );
 }
-
-
-
 
 
 export default Customer_Manage_Feedbacks;

@@ -169,7 +169,7 @@ const Dispatcher_EditUser = () => {
                 className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
               >
                 <option value="customer">Customer</option>
-                <option value="manager">Warehouse Manager</option>
+                {/* <option value="manager">Warehouse Manager</option> */}
                 {/* <option value="warehouse_manager">Warehouse Mananger</option> */}
               </select>
             </div>

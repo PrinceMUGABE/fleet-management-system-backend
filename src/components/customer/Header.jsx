@@ -49,11 +49,11 @@ const Customer_Header = () => {
 
   const Navbar_Links = [
     // { id: 1, name: "Dashboard", path: "/customer", icon: <MdDashboard className="text-xl" /> },
-    { id: 1, name: "Vehicles", path: "/customer/vehicles", icon: <FaCar className="text-xl" /> },
-    { id: 2, name: "Orders", path: "/customer/orders", icon: <FaTruckMoving className="text-xl" /> },
-    { id: 3, name: "Order Deliveries", path: "/customer/deliveries", icon: <FaTruck className="text-xl" /> },
-    { id: 4, name: "Feedbacks", path: "/customer/feedbacks", icon: <FaComments className="text-xl" /> },
-    { id: 5, name: "Profile", path: `/customer/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
+    // { id: 1, name: "Vehicles", path: "/customer/vehicles", icon: <FaCar className="text-xl" /> },
+    { id: 1, name: "Orders", path: "/customer/orders", icon: <FaTruckMoving className="text-xl" /> },
+    { id: 2, name: "Order Deliveries", path: "/customer/deliveries", icon: <FaTruck className="text-xl" /> },
+    { id: 3, name: "Feedbacks", path: "/customer/feedbacks", icon: <FaComments className="text-xl" /> },
+    { id: 4, name: "Profile", path: `/customer/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
   ];
 
   // Check if a link is active
@@ -69,7 +69,7 @@ const Customer_Header = () => {
           <div className="flex items-center">
             <Link to="/customer/vehicles" className="flex items-center">
               <img src={Logo} alt="Logo" className="h-12 w-auto mr-2" />
-              <span className="text-white font-bold text-xl hidden sm:block">VehicleMove</span>
+              <span className="text-white font-bold text-xl hidden sm:block">Smart Logistic Management System</span>
             </Link>
           </div>
 

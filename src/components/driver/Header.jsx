@@ -5,7 +5,8 @@ import {
   FaSignOutAlt, 
   FaComments,
   FaCar, 
-  FaTruckMoving
+  FaTruckMoving,
+  FaTruck
 } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { X, Menu, LogOut, ChevronDown, Bell } from "lucide-react";
@@ -48,11 +49,11 @@ const DriverHeader = () => {
 
   const Navbar_Links = [
     // { id: 1, name: "Dashboard", path: "/customer", icon: <MdDashboard className="text-xl" /> },
-    { id: 1, name: "Vehicles", path: "/driver/vehicles", icon: <FaCar className="text-xl" /> },
-    { id: 2, name: "Relocations", path: "/driver/relocations", icon: <FaTruckMoving className="text-xl" /> },
-    // { id: 5, name: "Forecast", path: "/customer/forecasts", icon: <MdInsights className="text-xl" /> },
-    { id: 3, name: "Feedbacks", path: "/driver/feedbacks", icon: <FaComments className="text-xl" /> },
-    { id: 4, name: "Profile", path: `/driver/profile`, icon: <FaUserCircle className="text-xl" /> },
+    // { id: 1, name: "Vehicles", path: "/customer/vehicles", icon: <FaCar className="text-xl" /> },
+    // { id: 1, name: "Orders", path: "/driver/orders", icon: <FaTruckMoving className="text-xl" /> },
+    { id: 1, name: "Order Deliveries", path: "/driver/deliveries", icon: <FaTruck className="text-xl" /> },
+    // { id: 2, name: "Feedbacks", path: "/driver/feedbacks", icon: <FaComments className="text-xl" /> },
+    { id: 2, name: "Profile", path: `/driver/profile`, icon: <FaUserCircle className="text-xl" /> },
   ];
 
   // Check if a link is active
@@ -66,9 +67,9 @@ const DriverHeader = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Link to="/driver/vehicles" className="flex items-center">
+            <Link to="/customer/vehicles" className="flex items-center">
               <img src={Logo} alt="Logo" className="h-12 w-auto mr-2" />
-              <span className="text-white font-bold text-xl hidden sm:block">VehicleMove</span>
+              <span className="text-white font-bold text-xl hidden sm:block">Smart Logistic Management System</span>
             </Link>
           </div>
 
@@ -80,7 +81,7 @@ const DriverHeader = () => {
                 to={link.path}
                 className={`text-white flex items-center space-x-2 px-4 py-3 rounded-md transition-all duration-200 ${
                   isActive(link.path)
-                    ? "bg-red-600 hover:bg-red-700 text-white font-medium"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white font-medium"
                     : "hover:bg-gray-700 hover:text-red-400"
                 }`}
               >
@@ -99,7 +100,7 @@ const DriverHeader = () => {
                 onClick={toggleNotifications}
               >
                 <Bell className="h-6 w-6" />
-                <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-red-500 text-xs flex items-center justify-center">3</span>
+                <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-blue-500 text-xs flex items-center justify-center">3</span>
               </button> */}
               
               {/* {notificationsOpen && (
@@ -142,7 +143,7 @@ const DriverHeader = () => {
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                   <Link 
-                    to={`/driver/profile`}
+                    to={`/customer/profile/${userId}`}
                     className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-t-md"
                     onClick={() => setDropdownOpen(false)}
                   >
@@ -217,7 +218,7 @@ const DriverHeader = () => {
               to={link.path}
               className={`text-white flex items-center space-x-3 p-3 rounded-md transition-colors duration-200 mb-2 ${
                 isActive(link.path)
-                  ? "bg-red-600 hover:bg-red-700"
+                  ? "bg-blue-600 hover:bg-blue-700"
                   : "hover:bg-gray-700"
               }`}
               onClick={() => setIsOpen(false)}
@@ -252,6 +253,8 @@ const DriverHeader = () => {
     </nav>
   );
 };
+
+
 
 
 export default DriverHeader;

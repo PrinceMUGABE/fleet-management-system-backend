@@ -199,7 +199,7 @@ const Dispatcher_CreateUser = () => {
               >
                 <option value="" disabled>Select Role</option>
                 <option value="customer">Customer</option>
-                <option value="manager">Warehouse Manager</option>
+                {/* <option value="manager">Warehouse Manager</option> */}
                 {/* <option value="warehouse_manager">Warehouse Manager</option> */}
 
               </select>

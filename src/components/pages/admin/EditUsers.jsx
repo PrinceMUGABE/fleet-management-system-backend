@@ -171,7 +171,7 @@ const EditUser = () => {
                 <option value="admin">Admin</option>
                 <option value="customer">Customer</option>
                 <option value="dispatcher">Dispatcher</option>
-                <option value="warehouse_manager">Warehouse Mananger</option>
+                {/* <option value="warehouse_manager">Warehouse Mananger</option> */}
               </select>
             </div>
 
