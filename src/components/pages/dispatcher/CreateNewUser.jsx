@@ -5,7 +5,7 @@ import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 
-const CreateUser = () => {
+const Dispatcher_CreateUser = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     phone: '',
@@ -68,7 +68,7 @@ const CreateUser = () => {
   
       if (response.status === 201) {
         setMessage('Registration successful!');
-        setTimeout(() => navigate('/admin/users'), 2000);
+        setTimeout(() => navigate('/dispatcher/users'), 2000);
       }
     } catch (error) {
       if (error.response?.data) {
@@ -199,8 +199,8 @@ const CreateUser = () => {
               >
                 <option value="" disabled>Select Role</option>
                 <option value="customer">Customer</option>
-                <option value="dispatcher">Dispatcher</option>
-                <option value="warehouse_manager">Warehouse Manager</option>
+                <option value="manager">Warehouse Manager</option>
+                {/* <option value="warehouse_manager">Warehouse Manager</option> */}
 
               </select>
               {errors.role && <p className="text-blue-400 text-sm mt-1">{errors.role}</p>}
@@ -226,7 +226,7 @@ const CreateUser = () => {
             
             <div className="mt-5 text-center">
               <Link
-                to="/admin/users"
+                to="/dispatcher/users"
                 className="text-gray-400 hover:text-white flex items-center justify-center gap-1"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -240,4 +240,4 @@ const CreateUser = () => {
   );
 };
 
-export default CreateUser;
+export default Dispatcher_CreateUser;

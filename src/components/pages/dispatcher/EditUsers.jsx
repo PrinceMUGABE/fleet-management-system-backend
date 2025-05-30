@@ -5,7 +5,7 @@ import axios from "axios";
 import { ArrowLeft } from "lucide-react";
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 
-const EditUser = () => {
+const Dispatcher_EditUser = () => {
   const { id } = useParams();
   const [data, setData] = useState({}); // Store the user data
   const [loading, setLoading] = useState(false); // Loading state for spinner
@@ -66,7 +66,7 @@ const EditUser = () => {
       .then((res) => {
         if (res.data) {
           // alert("Data updated successfully");
-          navigate("/admin/users"); // Navigate back to the users list page
+          navigate("/dispatcher/users"); // Navigate back to the users list page
         }
       })
       .catch((err) => {
@@ -168,10 +168,9 @@ const EditUser = () => {
                 required
                 className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
               >
-                <option value="admin">Admin</option>
                 <option value="customer">Customer</option>
-                <option value="dispatcher">Dispatcher</option>
-                <option value="warehouse_manager">Warehouse Mananger</option>
+                <option value="manager">Warehouse Manager</option>
+                {/* <option value="warehouse_manager">Warehouse Mananger</option> */}
               </select>
             </div>
 
@@ -195,7 +194,7 @@ const EditUser = () => {
             
             <div className="mt-5 text-center">
               <Link
-                to="/admin/users"
+                to="/dispatcher/users"
                 className="text-gray-400 hover:text-white flex items-center justify-center gap-1"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -209,4 +208,4 @@ const EditUser = () => {
   );
 };
 
-export default EditUser;
+export default Dispatcher_EditUser;

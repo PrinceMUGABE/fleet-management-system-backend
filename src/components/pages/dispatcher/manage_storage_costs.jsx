@@ -46,7 +46,7 @@ import {
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const StorageCostManager = () => {
+const Dispatcher_StorageCostManager = () => {
   const [costData, setCostData] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -1202,4 +1202,4 @@ return (
 );
 };
 
-export default StorageCostManager;
+export default Dispatcher_StorageCostManager;

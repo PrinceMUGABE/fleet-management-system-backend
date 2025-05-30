@@ -62,7 +62,7 @@ const STATUS_COLORS = {
 
 const BASE_URL = "http://127.0.0.1:8000";
 
-function AdminDashboard() {
+function DispatcherHome() {
   const navigate = useNavigate();
 
  // Fixed adapter functions
@@ -828,7 +828,7 @@ useEffect(() => {
   return (
     <div className="p-6 space-y-6 bg-gray-950 min-h-screen text-gray-300">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-blue-500">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-blue-500">Dashboard</h1>
         <div className="flex space-x-2">
           <button
             onClick={() => setSelectedTimePeriod("daily")}
@@ -865,7 +865,7 @@ useEffect(() => {
   
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-        {/* Users Card */}
+        {/* Users Card
         <div className="bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-800 hover:border-gray-700 transition-all">
           <div className="p-5">
             <div className="flex items-center">
@@ -896,7 +896,7 @@ useEffect(() => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
   
         {/* Vehicles Card */}
         <div className="bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-800 hover:border-gray-700 transition-all">
@@ -1078,7 +1078,7 @@ useEffect(() => {
               <LineChart
                 data={activeMetrics.users.map((day, index) => ({
                   date: formatDisplayDate(day.date),
-                  Users: day.count,
+             
                   Vehicles: activeMetrics.vehicles[index]?.count || 0,
                   Drivers: activeMetrics.drivers[index]?.count || 0,
                   orders: activeMetrics.orders[index]?.count || 0,
@@ -1095,7 +1095,7 @@ useEffect(() => {
                 <RechartsLegend wrapperStyle={{ color: '#9CA3AF' }} />
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
   
-                {["Users", "Vehicles", "Drivers", "orders", "warehouses"].map(
+                {["Vehicles", "Drivers", "orders", "warehouses"].map(
                   (key, index) => (
                     <Line
                       key={key}
@@ -1121,11 +1121,7 @@ useEffect(() => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={[
-                  ...statusDistribution.users.map((item) => ({
-                    name: `Users: ${item.status}`,
-                    count: item.count,
-                    fill: STATUS_COLORS[item.status] || COLORS[0],
-                  })),
+
                   ...statusDistribution.vehicles.map((item) => ({
                     name: `Vehicles: ${item.status}`,
                     count: item.count,
@@ -1236,64 +1232,10 @@ useEffect(() => {
         </div>
       </div>
   
-      {/* Recent Activity Table */}
-      {/* <div className="bg-gray-900 rounded-xl shadow-md p-6 mt-6 border border-gray-800">
-        <h3 className="text-lg font-semibold mb-4 text-blue-500">
-          Orders Distribution
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-700">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 bg-gray-800 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Total orders
-                </th>
-                <th className="px-6 py-3 bg-gray-800 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Completed
-                </th>
-                <th className="px-6 py-3 bg-gray-800 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Pending
-                </th>
-                <th className="px-6 py-3 bg-gray-800 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Completion Rate
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-gray-900 divide-y divide-gray-700">
-              {ordersData.slice(0, 5).map((order, index) => (
-                <tr
-                  key={order.order}
-                  className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-900"}
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.count}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.completed}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                    {order.pending}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="w-full bg-gray-700 rounded-full h-2.5">
-                        <div
-                          className="bg-gray-600 h-2.5 rounded-full"
-                          style={{ width: `${order.completionRate}%` }}
-                        ></div>
-                      </div>
-                      <span className="ml-2 text-sm text-gray-300">
-                        {order.completionRate}%
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div> */}
+     
     </div>
   );
 }
-export default AdminDashboard;
+
+
+export default DispatcherHome;

@@ -4,7 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { User, Phone, Mail, Clock, Edit, Save, X, ArrowLeft } from 'lucide-react';
 import profileImage from '../../../assets/pictures/driving2.jpg';
 
-function UserProfile() {
+function DispatcherProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -185,9 +185,10 @@ function UserProfile() {
 
   if (!userData) {
     return (
-      <section className="relative py-16 px-4 flex items-center justify-center h-full">
+      <section className="bg-gray-800 min-h-screen flex items-center justify-center">
+        <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url(${profileImage})` }}></div>
         <div className="text-white text-xl flex items-center z-10">
-          <svg className="animate-spin h-8 w-8 mr-3 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg className="animate-spin h-8 w-8 mr-3 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
@@ -198,14 +199,11 @@ function UserProfile() {
   }
 
   return (
-    <section className="relative py-16 px-4">
-      {/* Background overlay with image - contained within this section */}
-      {/* <div 
-        className="absolute inset-0 bg-cover bg-center opacity-20 z-0" 
-        style={{ backgroundImage: `url(${profileImage})` }}
-      ></div> */}
+    <section className="bg-gray-800 min-h-screen flex items-center justify-center px-4 py-16">
+      {/* Background overlay with image */}
+      {/* <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url(${profileImage})` }}></div> */}
 
-      <div className="container mx-auto max-w-2xl relative z-10">
+      <div className="container mx-auto max-w-2xl z-10">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">
             My Profile
@@ -227,7 +225,7 @@ function UserProfile() {
           </div>
 
           {error && (
-            <div className="mx-6 mt-6 p-3 rounded bg-gray-900 text-blue-100">
+            <div className="mx-6 mt-6 p-3 rounded bg-gray-900 text-gray-100">
               {error}
             </div>
           )}
@@ -238,7 +236,7 @@ function UserProfile() {
                 <div className="grid grid-cols-1 gap-4">
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg flex items-start">
                     <div className="p-2 bg-gray-700 rounded-full mr-4">
-                      <Phone className="h-5 w-5 text-blue-500" />
+                      <Phone className="h-5 w-5 text-gray-500" />
                     </div>
                     <div>
                       <span className="text-gray-400 text-sm block">Phone Number</span>
@@ -248,7 +246,7 @@ function UserProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg flex items-start">
                     <div className="p-2 bg-gray-700 rounded-full mr-4">
-                      <Mail className="h-5 w-5 text-blue-500" />
+                      <Mail className="h-5 w-5 text-gray-500" />
                     </div>
                     <div>
                       <span className="text-gray-400 text-sm block">Email Address</span>
@@ -258,7 +256,7 @@ function UserProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg flex items-start">
                     <div className="p-2 bg-gray-700 rounded-full mr-4">
-                      <User className="h-5 w-5 text-blue-500" />
+                      <User className="h-5 w-5 text-gray-500" />
                     </div>
                     <div>
                       <span className="text-gray-400 text-sm block">Role</span>
@@ -268,7 +266,7 @@ function UserProfile() {
 
                   <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg flex items-start">
                     <div className="p-2 bg-gray-700 rounded-full mr-4">
-                      <Clock className="h-5 w-5 text-blue-500" />
+                      <Clock className="h-5 w-5 text-gray-500" />
                     </div>
                     <div>
                       <span className="text-gray-400 text-sm block">Member Since</span>
@@ -282,7 +280,7 @@ function UserProfile() {
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={handleEditClick}
-                    className="px-6 py-3 text-white bg-gray-600 hover:bg-gray-700 rounded-md transition duration-200 ease-in-out flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    className="px-6 py-3 text-white bg-gray-600 hover:bg-gray-700 rounded-md transition duration-200 ease-in-out flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
                   >
                     <Edit className="h-5 w-5" />
                     Edit Profile
@@ -310,7 +308,7 @@ function UserProfile() {
                         value={formData.phone_number}
                         onChange={handleChange}
                         placeholder="e.g., 0781234567"
-                        className="w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-600"
                         required
                       />
                     </div>
@@ -334,7 +332,7 @@ function UserProfile() {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="e.g., example@gmail.com"
-                        className="w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-600"
                         required
                       />
                     </div>
@@ -376,7 +374,7 @@ function UserProfile() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="px-6 py-3 text-white bg-gray-600 hover:bg-gray-700 rounded-md transition duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50"
+                    className="px-6 py-3 text-white bg-gray-600 hover:bg-gray-700 rounded-md transition duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 disabled:opacity-50"
                   >
                     {isLoading ? (
                       <>
@@ -396,6 +394,16 @@ function UserProfile() {
                 </div>
               </form>
             )}
+
+            <div className="mt-8 text-center">
+              <Link
+                to="/dispatcher"
+                className="text-gray-400 hover:text-white flex items-center justify-center gap-1"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to dashboard
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -403,4 +411,4 @@ function UserProfile() {
   );
 }
 
-export default UserProfile;
+export default DispatcherProfile;

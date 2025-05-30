@@ -25,7 +25,7 @@ import { X, Menu } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../../assets/pictures/logo.png";
 
-function Sidebar() {
+function Dispatcher_Sidebar() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,24 +42,24 @@ function Sidebar() {
 
   // Enhanced sidebar links with more appropriate icons
   const Sidebar_Links = [
-    { id: 1, name: "Dashboard", path: "/admin", icon: <MdDashboard className="text-xl" /> },
-    { id: 2, name: "Users", path: "/admin/users", icon: <MdPeople className="text-xl" /> },
-    { id: 3, name: "Vehicles", path: "/admin/vehicles", icon: <MdDirectionsCar className="text-xl" /> },
-    { id: 4, name: "Drivers", path: "/admin/drivers", icon: <MdPersonPin className="text-xl" /> },
-    { id: 5, name: "Warehouses", path: "/admin/warehouses", icon: <MdWarehouse className="text-xl" /> },
-    { id: 6, name: "Storage Costs", path: "/admin/costs", icon: <MdAttachMoney className="text-xl" /> },
-    { id: 7, name: "Orders", path: "/admin/relocations", icon: <MdInventory className="text-xl" /> },
-    { id: 8, name: "Delivery", path: "/admin/deliveries", icon: <MdLocalShipping className="text-xl" /> },
-    { id: 9, name: "Commodities", path: "/admin/commodities", icon: <FaBoxes className="text-xl" /> },
-    { id: 10, name: "Categories", path: "/admin/categories", icon: <FaTag className="text-xl" /> },
-    { id: 11, name: "Feedbacks", path: "/admin/feedbacks", icon: <MdFeedback className="text-xl" /> },
-    { id: 12, name: "Profile", path: `/admin/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
+    { id: 1, name: "Dashboard", path: "/dispatcher", icon: <MdDashboard className="text-xl" /> },
+    { id: 2, name: "Users", path: "/dispatcher/users", icon: <MdPeople className="text-xl" /> },
+    { id: 3, name: "Vehicles", path: "/dispatcher/vehicles", icon: <MdDirectionsCar className="text-xl" /> },
+    { id: 4, name: "Drivers", path: "/dispatcher/drivers", icon: <MdPersonPin className="text-xl" /> },
+    { id: 5, name: "Warehouses", path: "/dispatcher/warehouses", icon: <MdWarehouse className="text-xl" /> },
+    { id: 6, name: "Storage Costs", path: "/dispatcher/costs", icon: <MdAttachMoney className="text-xl" /> },
+    { id: 7, name: "Orders", path: "/dispatcher/relocations", icon: <MdInventory className="text-xl" /> },
+    { id: 8, name: "Delivery", path: "/dispatcher/deliveries", icon: <MdLocalShipping className="text-xl" /> },
+    { id: 9, name: "Commodities", path: "/dispatcher/commodities", icon: <FaBoxes className="text-xl" /> },
+    { id: 10, name: "Categories", path: "/dispatcher/categories", icon: <FaTag className="text-xl" /> },
+    { id: 11, name: "Feedbacks", path: "/dispatcher/feedbacks", icon: <MdFeedback className="text-xl" /> },
+    { id: 12, name: "Profile", path: `/dispatcher/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
   ];
 
   // Check if the current path matches the link path
   const isActiveLink = (path) => {
     return location.pathname === path || 
-           (path !== "/admin" && location.pathname.startsWith(path));
+           (path !== "/dispatcher" && location.pathname.startsWith(path));
   };
 
   return (
@@ -179,4 +179,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default Dispatcher_Sidebar;

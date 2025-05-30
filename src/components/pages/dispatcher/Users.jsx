@@ -55,7 +55,7 @@ const SummaryCard = ({ icon, title, value, bgColor, textColor }) => (
   </div>
 );
 
-function Users() {
+function Dispatcher_ManageUsers() {
   const [userData, setUserData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage, setUsersPerPage] = useState(5);
@@ -93,6 +93,7 @@ function Users() {
       const res = await axios.get("http://127.0.0.1:8000/users/", {
         headers: { Authorization: `Bearer ${token}` }
       });
+
       setUserData(Array.isArray(res.data.users) ? res.data.users : []);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -140,16 +141,15 @@ function Users() {
   };
 
   const getRoleDisplayName = role => ({
-    admin: "Admin",
+    manager: "Manager",
     customer: "Customer",
     driver: "Driver",
-    dispatcher: "Dispatcher",
     user: "User"
   }[role] || role);
 
   const getRoleBadgeClass = role => {
     const classes = {
-      admin: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+      manager: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
       customer: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
       driver: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
       user: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
@@ -159,7 +159,7 @@ function Users() {
 
   const getRoleIcon = role => {
     const icons = {
-      admin: faUserShield,
+      manager: faUserShield,
       customer: faUserCheck,
       driver: faUserTie,
       user: faUsers
@@ -167,54 +167,63 @@ function Users() {
     return icons[role] || faUsers;
   };
 
-  // Filter and sort data
-  const filteredSortedData = useMemo(() => {
-    return userData
-      .filter(user => {
-        const matchesSearch = [user.phone_number, user.role, user.email, user.created_at]
-          .some(field => field?.toLowerCase().includes(searchQuery.toLowerCase()));
-        
-        const matchesRole = !filters.role || user.role === filters.role;
-        
-        const createdDate = new Date(user.created_at);
-        const matchesDateFrom = !filters.dateFrom || createdDate >= new Date(filters.dateFrom);
-        const matchesDateTo = !filters.dateTo || createdDate <= new Date(filters.dateTo);
-        
-        return matchesSearch && matchesRole && matchesDateFrom && matchesDateTo;
-      })
-      .sort((a, b) => {
-        const fieldA = a[filters.sortField];
-        const fieldB = b[filters.sortField];
-        
-        if (filters.sortDirection === 'asc') {
-          return fieldA < fieldB ? -1 : fieldA > fieldB ? 1 : 0;
-        } else {
-          return fieldA > fieldB ? -1 : fieldA < fieldB ? 1 : 0;
-        }
-      });
-  }, [userData, searchQuery, filters]);
 
-  // Calculate summary metrics
-  const summaryMetrics = useMemo(() => {
-    const roleCounts = userData.reduce((acc, user) => {
+
+const filteredSortedData = useMemo(() => {
+  return userData
+    .filter(user => {1
+      // Skip admin users
+      if (user.role === 'admin') return false;
+      
+      const matchesSearch = [user.phone_number, user.role, user.email, user.created_at]
+        .some(field => field?.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      const matchesRole = !filters.role || user.role === filters.role;
+      
+      const createdDate = new Date(user.created_at);
+      const matchesDateFrom = !filters.dateFrom || createdDate >= new Date(filters.dateFrom);
+      const matchesDateTo = !filters.dateTo || createdDate <= new Date(filters.dateTo);
+      
+      return matchesSearch && matchesRole && matchesDateFrom && matchesDateTo;
+    })
+    .sort((a, b) => {
+      const fieldA = a[filters.sortField];
+      const fieldB = b[filters.sortField];
+      
+      if (filters.sortDirection === 'asc') {
+        return fieldA < fieldB ? -1 : fieldA > fieldB ? 1 : 0;
+      } else {
+        return fieldA > fieldB ? -1 : fieldA < fieldB ? 1 : 0;
+      }
+    });
+}, [userData, searchQuery, filters]);
+
+// Calculate summary metrics - Modified to exclude admin users
+const summaryMetrics = useMemo(() => {
+  const roleCounts = userData.reduce((acc, user) => {
+    if (user.role !== 'admin') {
       acc[user.role] = (acc[user.role] || 0) + 1;
-      return acc;
-    }, {});
-    
-    const newUsersLast30Days = userData.filter(user => {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      return new Date(user.created_at) >= thirtyDaysAgo;
-    }).length;
-    
-    return {
-      total: userData.length,
-      admins: roleCounts.admin || 0,
-      customers: roleCounts.customer || 0,
-      drivers: roleCounts.driver || 0,
-      newUsersLast30Days
-    };
-  }, [userData]);
+    }
+    return acc;
+  }, {});
+  
+  const newUsersLast30Days = userData.filter(user => {
+    if (user.role === 'admin') return false;
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    return new Date(user.created_at) >= thirtyDaysAgo;
+  }).length;
+  
+  return {
+    total: Object.values(roleCounts).reduce((sum, count) => sum + count, 0),
+    managers: roleCounts.manager || 0,
+    customers: roleCounts.customer || 0,
+    drivers: roleCounts.driver || 0,
+    newUsersLast30Days
+  };
+}, [userData]);
+
+
 
   const renderCharts = () => {
     if (!userData.length) return null;
@@ -229,12 +238,12 @@ function Users() {
     const userGrowthData = Object.entries(
       userData.reduce((acc, user) => {
         const date = new Date(user.created_at).toLocaleDateString();
-        acc[date] = acc[date] || { total: 0, admin: 0, driver: 0, customer: 0 };
+        acc[date] = acc[date] || { total: 0, manager: 0, driver: 0, customer: 0 };
         acc[date].total += 1;
         acc[date][user.role] += 1;
         return acc;
       }, {})
-    ).map(([date, counts]) => ({ date, total: counts.total, admin: counts.admin || 0, driver: counts.driver || 0, customer: counts.customer || 0 }))
+    ).map(([date, counts]) => ({ date, total: counts.total, manager: counts.manager || 0, driver: counts.driver || 0, customer: counts.customer || 0 }))
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     return (
@@ -363,8 +372,8 @@ function Users() {
             />
             <SummaryCard 
               icon={faUserShield} 
-              title="Admins" 
-              value={summaryMetrics.admins} 
+              title="managers" 
+              value={summaryMetrics.managers} 
               bgColor="bg-gray dark:bg-gray-800" 
               textColor="text-green-600 dark:text-green-400" 
             />
@@ -424,7 +433,7 @@ function Users() {
                           className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 dark:text-gray-300"
                         >
                           <option value="">All Roles</option>
-                          <option value="admin">Admin</option>
+                          <option value="manager">manager</option>
                           <option value="customer">Customer</option>
                           <option value="driver">Driver</option>
                         </select>
@@ -529,7 +538,7 @@ function Users() {
                 </div>
                 
                 <Link 
-                  to="/admin/createUser" 
+                  to="/dispatcher/createUser" 
                   className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg shadow-sm hover:bg-green-700 transition"
                 >
                   <FontAwesomeIcon icon={faUserPlus} />
@@ -664,7 +673,7 @@ function Users() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-4">
                             <Link 
-                              to={`/admin/editUser/${user.id}`} 
+                              to={`/dispatcher/editUser/${user.id}`} 
                               className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition"
                               title="Edit"
                             >
@@ -739,4 +748,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default Dispatcher_ManageUsers;

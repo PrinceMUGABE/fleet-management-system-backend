@@ -29,7 +29,6 @@ import AdminProfile from "./components/pages/admin/AdminProfile.jsx";
 import UserProfile from "./components/pages/customer/UserProfile.jsx";
 import UserHome from "./components/pages/customer/Home.jsx";
 // import Admin_Manage_Inventory from "./components/pages/admin/manage_inventories.jsx";
-import Admin_DemandForecast from "./components/pages/admin/manage_demandForecast.jsx";
 import Admin_Manage_Vehicles from "./components/pages/admin/manage_vehicles.jsx";
 import Admin_Manage_Drivers from "./components/pages/admin/manage_drivers.jsx";
 import Customer_Layout from "./components/customer/Layout.jsx";
@@ -54,6 +53,27 @@ import InventoryMovementHistory from "./components/pages/admin/inventory_movemen
 import WarehouseCommodityManagement from "./components/pages/admin/warehouse_commodity_management.jsx";
 import StorageCosts from "./components/pages/admin/manage_storage_costs.jsx";
 import Admin_OrderManagement from "./components/pages/admin/manage_orders.jsx";
+import Admin_Manage_Deliveries from "./components/pages/admin/manage_deliveries.jsx";
+import Dispatcher_StorageCostManager from "./components/pages/dispatcher/manage_storage_costs.jsx";
+import Dispatcher_InventoryMovementHistory from "./components/pages/dispatcher/inventory_movement_history.jsx";
+import Dispatcher_CommodityManagement from "./components/pages/dispatcher/commodity_management.jsx";
+import Dispatcher_CategoryManagement from "./components/pages/dispatcher/category_mangement.jsx";
+import Dispatcher_WarehouseCommodityManagement from "./components/pages/dispatcher/warehouse_commodity_management.jsx";
+import DispatcherProfile from "./components/pages/dispatcher/AdminProfile.jsx";
+import Dispatcher_Manage_Deliveries from "./components/pages/dispatcher/manage_deliveries.jsx";
+import Dispatcher_Manage_Feedbacks from "./components/pages/dispatcher/manage_feedbacks.jsx";
+import Dispatcher_WarehouseManagement from "./components/pages/dispatcher/manage_warehouses.jsx";
+import Dispatcher_Manage_Drivers from "./components/pages/dispatcher/manage_drivers.jsx";
+import Dispatcher_Create_Relocation from "./components/pages/dispatcher/create_relocation.jsx";
+import Dispatcher_OrderManagement from "./components/pages/dispatcher/manage_orders.jsx";
+import Dispatcher_Manage_Vehicles from "./components/pages/dispatcher/manage_vehicles.jsx";
+import DispatcherHome from "./components/pages/dispatcher/Home.jsx";
+import Dispatcher_Layout from "./components/dispatcher/Layout.jsx";
+import Dispatcher_EditUser from "./components/pages/dispatcher/EditUsers.jsx";
+import Dispatcher_CreateUser from "./components/pages/dispatcher/CreateNewUser.jsx";
+import Dispatcher_ManageUsers from "./components/pages/dispatcher/Users.jsx";
+import Customer_OrderManagement from "./components/pages/customer/manage_orders.jsx";
+import Customer_Manage_Deliveries from "./components/pages/customer/manage_deliveries.jsx";
 
 
 
@@ -101,7 +121,7 @@ const App = () => {
             <Route path="/admin/drivers" element={<Admin_Manage_Drivers />} />
             <Route path="/admin/warehouses" element={<Admin_Manage_Warehouses />} />
             <Route path="/admin/feedbacks" element={<Admin_Manage_Feedbacks />} />
-            <Route path="/admin/forecasts" element={<Admin_DemandForecast />} />
+            <Route path="/admin/deliveries" element={<Admin_Manage_Deliveries />} />
             <Route path="/admin/profile/:id" element={<AdminProfile />} />
 
 
@@ -117,6 +137,38 @@ const App = () => {
           </Route>
 
 
+          {/* Dispatcher */}
+
+          <Route path="/dispatcher" element={<Dispatcher_Layout />}>
+            <Route index element={<DispatcherHome />} />
+            <Route path="/dispatcher/users" element={<Dispatcher_ManageUsers />} />
+            <Route path="/dispatcher/edituser/:id" element={<Dispatcher_EditUser />} />
+            <Route path="/dispatcher/createUser" element={<Dispatcher_CreateUser />} />
+
+            <Route path="/dispatcher/vehicles" element={<Dispatcher_Manage_Vehicles />} />
+            <Route path="/dispatcher/relocations" element={<Dispatcher_OrderManagement />} />
+            <Route path="/dispatcher/createRelocation" element={<Dispatcher_Create_Relocation />} />
+
+
+            <Route path="/dispatcher/drivers" element={<Dispatcher_Manage_Drivers />} />
+            <Route path="/dispatcher/warehouses" element={<Dispatcher_WarehouseManagement />} />
+            <Route path="/dispatcher/feedbacks" element={<Dispatcher_Manage_Feedbacks />} />
+            <Route path="/dispatcher/deliveries" element={<Dispatcher_Manage_Deliveries />} />
+            <Route path="/dispatcher/profile/:id" element={<DispatcherProfile />} />
+
+
+            <Route path="/dispatcher/warehouses" element={<WarehouseManagement />} />
+            {/* <Route path="/admin/warehouses/:warehouseId" element={<WarehouseDetail />} /> */}
+            <Route path="/dispatcher/warehouses/:warehouseId/commodities" element={<Dispatcher_WarehouseCommodityManagement />} />
+            <Route path="/dispatcher/warehouses/:warehouseId/movements" element={<Dispatcher_InventoryMovementHistory />} />
+            <Route path="/dispatcher/categories" element={<Dispatcher_CategoryManagement />} />
+            <Route path="/dispatcher/commodities" element={<Dispatcher_CommodityManagement />} />
+            <Route path="/dispatcher/warehouses/:warehouseId/movements" element={<Dispatcher_InventoryMovementHistory />} />
+            <Route path="/dispatcher/costs" element={<Dispatcher_StorageCostManager />} />
+
+          </Route>
+
+
           {/* user */}
 
           <Route path="/customer" element={<Customer_Layout />}>
@@ -126,6 +178,8 @@ const App = () => {
             <Route path="/customer/feedbacks" element={<Customer_Manage_Feedbacks />} />
 
             <Route path="/customer/profile/:id" element={<UserProfile />} />
+            <Route path="/customer/orders" element={<Customer_OrderManagement />} />
+            <Route path="/customer/deliveries" element={<Customer_Manage_Deliveries />} />
 
             <Route path="/customer/relocations" element={<Customer_Manage_Relocations />} />
      

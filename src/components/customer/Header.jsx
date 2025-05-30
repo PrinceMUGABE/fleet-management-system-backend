@@ -5,7 +5,8 @@ import {
   FaSignOutAlt, 
   FaComments,
   FaCar, 
-  FaTruckMoving
+  FaTruckMoving,
+  FaTruck
 } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { X, Menu, LogOut, ChevronDown, Bell } from "lucide-react";
@@ -49,10 +50,10 @@ const Customer_Header = () => {
   const Navbar_Links = [
     // { id: 1, name: "Dashboard", path: "/customer", icon: <MdDashboard className="text-xl" /> },
     { id: 1, name: "Vehicles", path: "/customer/vehicles", icon: <FaCar className="text-xl" /> },
-    { id: 2, name: "Relocations", path: "/customer/relocations", icon: <FaTruckMoving className="text-xl" /> },
-    // { id: 5, name: "Forecast", path: "/customer/forecasts", icon: <MdInsights className="text-xl" /> },
-    { id: 3, name: "Feedbacks", path: "/customer/feedbacks", icon: <FaComments className="text-xl" /> },
-    // { id: 4, name: "Profile", path: `/customer/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
+    { id: 2, name: "Orders", path: "/customer/orders", icon: <FaTruckMoving className="text-xl" /> },
+    { id: 3, name: "Order Deliveries", path: "/customer/deliveries", icon: <FaTruck className="text-xl" /> },
+    { id: 4, name: "Feedbacks", path: "/customer/feedbacks", icon: <FaComments className="text-xl" /> },
+    { id: 5, name: "Profile", path: `/customer/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
   ];
 
   // Check if a link is active
@@ -80,7 +81,7 @@ const Customer_Header = () => {
                 to={link.path}
                 className={`text-white flex items-center space-x-2 px-4 py-3 rounded-md transition-all duration-200 ${
                   isActive(link.path)
-                    ? "bg-red-600 hover:bg-red-700 text-white font-medium"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white font-medium"
                     : "hover:bg-gray-700 hover:text-red-400"
                 }`}
               >
@@ -99,7 +100,7 @@ const Customer_Header = () => {
                 onClick={toggleNotifications}
               >
                 <Bell className="h-6 w-6" />
-                <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-red-500 text-xs flex items-center justify-center">3</span>
+                <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-blue-500 text-xs flex items-center justify-center">3</span>
               </button> */}
               
               {/* {notificationsOpen && (
@@ -217,7 +218,7 @@ const Customer_Header = () => {
               to={link.path}
               className={`text-white flex items-center space-x-3 p-3 rounded-md transition-colors duration-200 mb-2 ${
                 isActive(link.path)
-                  ? "bg-red-600 hover:bg-red-700"
+                  ? "bg-blue-600 hover:bg-blue-700"
                   : "hover:bg-gray-700"
               }`}
               onClick={() => setIsOpen(false)}

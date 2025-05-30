@@ -70,7 +70,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-function Admin_Manage_Feedbacks() {
+function Dispatcher_Manage_Feedbacks() {
   const [feedbackData, setFeedbackData] = useState([]);
   const [orders, setorders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -1208,4 +1208,4 @@ function Admin_Manage_Feedbacks() {
   );
 }
 
-export default Admin_Manage_Feedbacks;
+export default Dispatcher_Manage_Feedbacks;

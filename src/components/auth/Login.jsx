@@ -131,10 +131,13 @@ const Login = () => {
 
           if (user.role.trim().toLowerCase() === "admin") {
             navigate("/admin");
-          } else if (user.role.trim().toLowerCase() === "customer") {
-            navigate("/customer/vehicles");
+          } else if (user.role.trim().toLowerCase() === "dispatcher") {
+            navigate("/dispatcher");
           } else if (user.role.trim().toLowerCase() === 'driver'){
             navigate("/driver/vehicles")
+          }
+          else if (user.role.trim().toLowerCase() === 'customer'){
+            navigate("/customer/orders")
           }
           else {
             console.log("Unknown user role. Please contact support.");
