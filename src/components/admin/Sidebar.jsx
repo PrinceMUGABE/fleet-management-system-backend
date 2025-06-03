@@ -42,24 +42,17 @@ function Sidebar() {
 
   // Enhanced sidebar links with more appropriate icons
   const Sidebar_Links = [
-    { id: 1, name: "Dashboard", path: "/admin", icon: <MdDashboard className="text-xl" /> },
-    { id: 2, name: "Users", path: "/admin/users", icon: <MdPeople className="text-xl" /> },
-    { id: 3, name: "Vehicles", path: "/admin/vehicles", icon: <MdDirectionsCar className="text-xl" /> },
-    { id: 4, name: "Drivers", path: "/admin/drivers", icon: <MdPersonPin className="text-xl" /> },
-    { id: 5, name: "Warehouses", path: "/admin/warehouses", icon: <MdWarehouse className="text-xl" /> },
-    { id: 6, name: "Storage Costs", path: "/admin/costs", icon: <MdAttachMoney className="text-xl" /> },
-    { id: 7, name: "Orders", path: "/admin/relocations", icon: <MdInventory className="text-xl" /> },
-    { id: 8, name: "Delivery", path: "/admin/deliveries", icon: <MdLocalShipping className="text-xl" /> },
-    { id: 9, name: "Commodities", path: "/admin/commodities", icon: <FaBoxes className="text-xl" /> },
-    { id: 10, name: "Categories", path: "/admin/categories", icon: <FaTag className="text-xl" /> },
-    { id: 11, name: "Feedbacks", path: "/admin/feedbacks", icon: <MdFeedback className="text-xl" /> },
-    { id: 12, name: "Profile", path: `/admin/profile/${userId}`, icon: <FaUserCircle className="text-xl" /> },
+    { id: 1, name: "Dashboard", path: "/", icon: <MdDashboard className="text-xl" /> },
+    { id: 2, name: "Vehicles", path: "/vehicles", icon: <MdDirectionsCar className="text-xl" /> },
+    { id: 3, name: "Drivers", path: "/drivers", icon: <MdPersonPin className="text-xl" /> },
+    { id: 4, name: "Batteries", path: "/batteries", icon: <MdPersonPin className="text-xl" /> },
+
   ];
 
   // Check if the current path matches the link path
   const isActiveLink = (path) => {
     return location.pathname === path || 
-           (path !== "/admin" && location.pathname.startsWith(path));
+           (path !== "/" && location.pathname.startsWith(path));
   };
 
   return (
