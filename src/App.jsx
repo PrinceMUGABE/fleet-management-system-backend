@@ -17,6 +17,8 @@ import AdminHome from "./components/pages/admin/Home.jsx";
 import Admin_Manage_Vehicles from "./components/pages/admin/manage_vehicles.jsx";
 import Admin_Manage_Drivers from "./components/pages/admin/manage_drivers.jsx";
 import Admin_Manage_Batteries from "./components/pages/admin/manage_batteries.jsx";
+import Manage_DriverAssignments from "./components/pages/admin/manage_driver_assignments.jsx";
+import Admin_Report from "./components/pages/admin/report.jsx";
 
 
 
@@ -43,6 +45,8 @@ const App = () => {
             <Route path="/vehicles" element={<Admin_Manage_Vehicles />} />
             <Route path="/drivers" element={<Admin_Manage_Drivers />} />
             <Route path="/batteries" element={<Admin_Manage_Batteries />} />
+            <Route path="/driverAssignments" element={<Manage_DriverAssignments />} />
+            <Route path="/report" element={<Admin_Report />} />
           </Route>
 
 

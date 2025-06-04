@@ -46,6 +46,9 @@ function Sidebar() {
     { id: 2, name: "Vehicles", path: "/vehicles", icon: <MdDirectionsCar className="text-xl" /> },
     { id: 3, name: "Drivers", path: "/drivers", icon: <MdPersonPin className="text-xl" /> },
     { id: 4, name: "Batteries", path: "/batteries", icon: <MdPersonPin className="text-xl" /> },
+    { id: 4, name: "Assign Driver", path: "/driverAssignments", icon: <MdPersonPin className="text-xl" /> },
+    { id: 5, name: "Report", path: "/report", icon: <MdPersonPin className="text-xl" /> },
+
 
   ];
 
