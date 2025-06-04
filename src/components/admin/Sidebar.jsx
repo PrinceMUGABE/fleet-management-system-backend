@@ -6,7 +6,9 @@ import {
   FaCommentDots,
   FaTruck,
   FaBoxes,
-  FaTag
+  FaTag,
+  FaBatteryFull,
+  FaCog
 } from "react-icons/fa";
 import { 
   MdDashboard, 
@@ -19,9 +21,12 @@ import {
   MdWarehouse,
   MdLocalShipping,
   MdInventory,
-  MdAttachMoney
+  MdAttachMoney,
+  MdAssignment,
+  MdReport,
+  MdSettings
 } from "react-icons/md";
-import { X, Menu } from "lucide-react";
+import { X, Menu, Car, Users, Battery, UserCheck, FileText, Settings } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../../assets/pictures/logo.png";
 
@@ -34,22 +39,15 @@ function Sidebar() {
   const userData = JSON.parse(localStorage.getItem("userData")) || {};
   const userId = userData.id || "";
 
-  const handleLogout = () => {
-    localStorage.removeItem("userData");
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
-  // Enhanced sidebar links with more appropriate icons
+  // Enhanced sidebar links with corresponding icons
   const Sidebar_Links = [
     { id: 1, name: "Dashboard", path: "/", icon: <MdDashboard className="text-xl" /> },
-    { id: 2, name: "Vehicles", path: "/vehicles", icon: <MdDirectionsCar className="text-xl" /> },
-    { id: 3, name: "Drivers", path: "/drivers", icon: <MdPersonPin className="text-xl" /> },
-    { id: 4, name: "Batteries", path: "/batteries", icon: <MdPersonPin className="text-xl" /> },
-    { id: 4, name: "Assign Driver", path: "/driverAssignments", icon: <MdPersonPin className="text-xl" /> },
-    { id: 5, name: "Report", path: "/report", icon: <MdPersonPin className="text-xl" /> },
-
-
+    { id: 2, name: "Vehicles", path: "/vehicles", icon: <Car className="text-xl" /> },
+    { id: 3, name: "Drivers", path: "/drivers", icon: <Users className="text-xl" /> },
+    { id: 4, name: "Batteries", path: "/batteries", icon: <Battery className="text-xl" /> },
+    { id: 5, name: "Assign Driver", path: "/driverAssignments", icon: <UserCheck className="text-xl" /> },
+    { id: 6, name: "Report", path: "/report", icon: <FileText className="text-xl" /> },
+    { id: 7, name: "Setting", path: "/setting", icon: <Settings className="text-xl" /> },
   ];
 
   // Check if the current path matches the link path
@@ -63,16 +61,16 @@ function Sidebar() {
       {/* Mobile Hamburger Button */}
       <button
         onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 text-white bg-gray-800 p-2 rounded-md shadow-lg hover:bg-gray-700 transition-colors"
+        className="md:hidden fixed top-4 left-4 z-50 text-white bg-purple-800 p-2 rounded-md shadow-lg hover:bg-purple-700 transition-colors"
         aria-label="Toggle menu"
       >
         <Menu className="h-6 w-6" />
       </button>
 
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex md:flex-col w-64 fixed left-0 top-0 h-screen bg-gradient-to-b from-gray-800 to-gray-900 shadow-xl py-6 z-40">
-        <div className="flex justify-center items-center mb-6 px-6 flex-shrink-0">
-          <img src={Logo} alt="Logo" className="h-12 w-auto" />
+      <div className="hidden md:flex md:flex-col w-64 fixed left-0 top-0 h-screen bg-gradient-to-b from-purple-700 to-purple-800 shadow-xl py-6 z-40">
+        <div className="flex justify-center items-center mb-6 px-2 flex-shrink-0">
+          <h1 className="text-white font-semibold text-lg">Fleet Management</h1>
         </div>
 
         {/* Scrollable Navigation Section */}
@@ -84,43 +82,32 @@ function Sidebar() {
                 to={link.path}
                 className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
                   isActiveLink(link.path)
-                    ? "bg-gray-700 text-white font-medium shadow-md"
-                    : "text-gray-300 hover:text-white hover:bg-gray-700/50"
+                    ? "bg-purple-600 text-white font-medium shadow-md"
+                    : "text-gray-300 hover:text-white hover:bg-purple-600/50"
                 }`}
               >
-                <span className={`${isActiveLink(link.path) ? "text-blue-400" : ""}`}>{link.icon}</span>
+                <span className={`${isActiveLink(link.path) ? "text-purple-300" : ""}`}>{link.icon}</span>
                 <span>{link.name}</span>
                 {isActiveLink(link.path) && (
-                  <span className="ml-auto w-1.5 h-6 rounded-full bg-blue-400"></span>
+                  <span className="ml-auto w-1.5 h-6 rounded-full bg-purple-300"></span>
                 )}
               </Link>
             ))}
           </div>
         </div>
-        
-        {/* Fixed Logout Button at Bottom */}
-        <div className="px-4 mt-4 flex-shrink-0 border-t border-gray-700 pt-4">
-          <button
-            onClick={handleLogout}
-            className="text-gray-300 hover:text-white flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700/50 transition-all duration-200 w-full text-left group"
-          >
-            <FaSignOutAlt className="text-xl group-hover:text-blue-400" />
-            <span>Logout</span>
-          </button>
-        </div>
       </div>
 
       {/* Mobile Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-gray-800 to-gray-900 transform transition-all duration-300 ease-in-out z-50 ${
+        className={`fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-purple-700 to-purple-800 transform transition-all duration-300 ease-in-out z-50 ${
           isMobileSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
         } md:hidden`}
       >
-        <div className="flex justify-between items-center p-4 border-b border-gray-700">
-          <img src={Logo} alt="Logo" className="h-12 w-auto" />
+        <div className="flex justify-between items-center p-4 border-b border-purple-600">
+          <h1 className="text-white font-semibold text-lg">Fleet Management</h1>
           <button
             onClick={() => setIsMobileSidebarOpen(false)}
-            className="text-gray-300 hover:text-white focus:outline-none hover:bg-gray-700/50 p-1 rounded-full"
+            className="text-gray-300 hover:text-white focus:outline-none hover:bg-purple-600/50 p-1 rounded-full"
             aria-label="Close menu"
           >
             <X className="h-6 w-6" />
@@ -135,31 +122,18 @@ function Sidebar() {
                 to={link.path}
                 className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
                   isActiveLink(link.path)
-                    ? "bg-gray-700 text-white font-medium shadow-md"
-                    : "text-gray-300 hover:text-white hover:bg-gray-700/50"
+                    ? "bg-purple-600 text-white font-medium shadow-md"
+                    : "text-gray-300 hover:text-white hover:bg-purple-600/50"
                 }`}
                 onClick={() => setIsMobileSidebarOpen(false)}
               >
-                <span className={`${isActiveLink(link.path) ? "text-blue-400" : ""}`}>{link.icon}</span>
+                <span className={`${isActiveLink(link.path) ? "text-purple-300" : ""}`}>{link.icon}</span>
                 <span>{link.name}</span>
                 {isActiveLink(link.path) && (
-                  <span className="ml-auto w-1.5 h-6 rounded-full bg-blue-400"></span>
+                  <span className="ml-auto w-1.5 h-6 rounded-full bg-purple-300"></span>
                 )}
               </Link>
             ))}
-          </div>
-          
-          <div className="p-4 mt-auto border-t border-gray-700">
-            <button
-              onClick={() => {
-                handleLogout();
-                setIsMobileSidebarOpen(false);
-              }}
-              className="text-gray-300 hover:text-white flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700/50 transition-all duration-200 w-full text-left group"
-            >
-              <FaSignOutAlt className="text-xl group-hover:text-blue-400" />
-              <span>Logout</span>
-            </button>
           </div>
         </div>
       </div>

@@ -19,6 +19,7 @@ import Admin_Manage_Drivers from "./components/pages/admin/manage_drivers.jsx";
 import Admin_Manage_Batteries from "./components/pages/admin/manage_batteries.jsx";
 import Manage_DriverAssignments from "./components/pages/admin/manage_driver_assignments.jsx";
 import Admin_Report from "./components/pages/admin/report.jsx";
+import Admin_Settings from "./components/pages/admin/settings.jsx";
 
 
 
@@ -47,6 +48,7 @@ const App = () => {
             <Route path="/batteries" element={<Admin_Manage_Batteries />} />
             <Route path="/driverAssignments" element={<Manage_DriverAssignments />} />
             <Route path="/report" element={<Admin_Report />} />
+            <Route path="/setting" element={<Admin_Settings />} />
           </Route>
 
 

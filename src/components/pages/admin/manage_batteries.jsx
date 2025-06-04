@@ -328,6 +328,7 @@ function BatteryManagement() {
       setMessage("Charging stopped successfully");
       setMessageType("success");
       fetchBatteries();
+      fetchAssignments(); // Refresh assignments after stopping charging
     } catch (err) {
       console.error("Error stopping charging:", err);
       handleError(err, "Failed to stop charging");
@@ -624,12 +625,12 @@ function BatteryManagement() {
                   Start Discharge
                 </button>
               )}
-              <button
+              {/* <button
                 onClick={checkDischargeStatus}
                 className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
               >
                 Check Status
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
