@@ -115,8 +115,14 @@ function AdminDashboard() {
         (assignment) => assignment.status === "completed"
       ).length;
 
-      // Calculate total revenue from completed trips (placeholder calculation)
-      const totalRevenue = completedAssignments * 50; // Assuming $50 per completed trip
+      // Calculate total revenue from actual money_paid values for completed assignments
+      const totalRevenue = allAssignments
+        .filter((assignment) => assignment.status === "completed")
+        .reduce((sum, assignment) => {
+          const moneyPaid = parseFloat(assignment.money_paid) || 0;
+          return sum + moneyPaid;
+        }, 0);
+
 
       setReportStats({
         totalAssignments: allAssignments.length,
@@ -900,13 +906,14 @@ function AdminDashboard() {
        
 
         {/* Footer Summary */}
+        {/* Footer Summary */}
         <div className="mt-8 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg p-6">
           <div className="text-center">
             <h3 className="text-2xl font-bold mb-2">Fleet Management System</h3>
             <p className="text-indigo-100 mb-4">
               Comprehensive overview of your fleet operations and performance metrics
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold">{stats.totalVehicles}</div>
                 <div className="text-indigo-200 text-sm">Total Vehicles</div>
@@ -922,6 +929,12 @@ function AdminDashboard() {
               <div className="text-center">
                 <div className="text-2xl font-bold">{stats.totalBatteries}</div>
                 <div className="text-indigo-200 text-sm">Battery Units</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">
+                  {reportStats.totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} FRW
+                </div>
+                <div className="text-indigo-200 text-sm">Total Revenue</div>
               </div>
             </div>
           </div>

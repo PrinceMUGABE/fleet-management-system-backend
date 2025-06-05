@@ -125,7 +125,7 @@ function Admin_Manage_Vehicles() {
       await handleFetch();
       setMessage("Vehicle deleted successfully");
       setMessageType("success");
-      handleFetch()
+      handleFetch();
     } catch (err) {
       setMessage(err.response?.data.message || "An error occurred");
       setMessageType("error");
@@ -138,11 +138,17 @@ function Admin_Manage_Vehicles() {
     try {
       await axios.put(`${BASE_URL}send-to-maintenance/${id}/`);
       await handleFetch();
-      await fetchVehiclesUnderMaintenance(); // Add this line
+      await fetchVehiclesUnderMaintenance();
       setMessage("Vehicle successfully sent to maintenance");
       setMessageType("success");
     } catch (err) {
-      setMessage(err.response?.data.message || "An error occurred");
+      // Check multiple possible error message locations
+      const errorMessage =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.response?.data?.detail ||
+        "An error occurred";
+      setMessage(errorMessage);
       setMessageType("error");
     }
   };
@@ -153,11 +159,17 @@ function Admin_Manage_Vehicles() {
     try {
       await axios.put(`${BASE_URL}remove-from-maintenance/${id}/`);
       await handleFetch();
-      await fetchVehiclesUnderMaintenance(); // Add this line
+      await fetchVehiclesUnderMaintenance();
       setMessage("Vehicle successfully removed from maintenance");
       setMessageType("success");
     } catch (err) {
-      setMessage(err.response?.data.message || "An error occurred");
+      // Check multiple possible error message locations
+      const errorMessage =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.response?.data?.detail ||
+        "An error occurred";
+      setMessage(errorMessage);
       setMessageType("error");
     }
   };
@@ -502,7 +514,7 @@ function Admin_Manage_Vehicles() {
                           icon={faBatteryFull}
                           className="mr-2"
                         />
-                        <span>Battery: {getBatteryLevel(vehicle.id)}%</span>
+                        <span>Battery: {getBatteryLevel(vehicle.id)} % </span>
                       </div>
                       <div className="flex items-center">
                         <span className="font-medium">Trips Covered:</span>

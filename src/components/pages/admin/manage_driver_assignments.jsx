@@ -26,36 +26,59 @@ function Manage_DriverAssignments() {
   const [pastAssignments, setPastAssignments] = useState([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [showEndModal, setShowEndModal] = useState(false);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
+  const [distanceCovered, setDistanceCovered] = useState("");
+  const [moneyPaid, setMoneyPaid] = useState("");
 
   const BASE_URL = "http://127.0.0.1:8000/";
 
   // Enhanced error handling function
-  const handleError = (error, defaultMessage = "An error occurred") => {
-    let errorMessage = defaultMessage;
+  // Enhanced error handling function
+const handleError = (error, defaultMessage = "An error occurred") => {
+  let errorMessage = defaultMessage;
 
-    if (error.response) {
-      if (error.response.data) {
-        if (typeof error.response.data === "string") {
-          errorMessage = error.response.data;
-        } else if (error.response.data.error) {
-          errorMessage = error.response.data.error;
-        } else if (error.response.data.detail) {
-          errorMessage = error.response.data.detail;
-        } else if (error.response.data.message) {
-          errorMessage = error.response.data.message;
+  if (error.response) {
+    if (error.response.data) {
+      if (typeof error.response.data === "string") {
+        errorMessage = error.response.data;
+      } else if (error.response.data.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response.data.detail) {
+        errorMessage = error.response.data.detail;
+      } else if (error.response.data.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response.data.end_time) {
+        // Handle validation errors for specific fields
+        if (Array.isArray(error.response.data.end_time)) {
+          errorMessage = error.response.data.end_time[0].string || error.response.data.end_time[0];
+        } else {
+          errorMessage = error.response.data.end_time;
+        }
+      } else {
+        // Handle general validation errors - extract first error message
+        const errorKeys = Object.keys(error.response.data);
+        if (errorKeys.length > 0) {
+          const firstErrorKey = errorKeys[0];
+          const firstError = error.response.data[firstErrorKey];
+          if (Array.isArray(firstError)) {
+            errorMessage = firstError[0].string || firstError[0] || `${firstErrorKey}: ${firstError[0]}`;
+          } else {
+            errorMessage = firstError || `${firstErrorKey}: ${firstError}`;
+          }
         }
       }
-    } else if (error.request) {
-      errorMessage = "Network error: Unable to connect to server";
-    } else {
-      errorMessage = error.message || defaultMessage;
     }
+  } else if (error.request) {
+    errorMessage = "Network error: Unable to connect to server";
+  } else {
+    errorMessage = error.message || defaultMessage;
+  }
 
-    setMessage(errorMessage);
-    setMessageType("error");
-  };
+  setMessage(errorMessage);
+  setMessageType("error");
+};
 
-  // Clear message after 5 seconds
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
@@ -85,6 +108,7 @@ function Manage_DriverAssignments() {
   const fetchBatteryAssignments = async () => {
     try {
       const res = await axios.get(`${BASE_URL}batteryAssignment/assignments/`);
+      console.log("Battery Assignments Response:", res.data);
       setBatteryAssignments(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Error fetching battery assignments:", err);
@@ -119,73 +143,146 @@ function Manage_DriverAssignments() {
     }
   };
 
-  const handleAssignDriver = async () => {
-    if (
-      !selectedDriver ||
-      !selectedAssignment ||
-      !startDate ||
-      !startTime ||
-      !fromLocation ||
-      !toLocation
-    ) {
-      setMessage("Please fill all required fields");
+ const handleAssignDriver = async () => {
+  if (
+    !selectedDriver ||
+    !selectedAssignment ||
+    !startDate ||
+    !startTime ||
+    !fromLocation ||
+    !toLocation
+  ) {
+    setMessage("Please fill all required fields");
+    setMessageType("error");
+    return;
+  }
+
+  try {
+    const assignmentData = {
+      driver: selectedDriver,
+      battery_assignment: selectedAssignment,
+      origin: fromLocation,
+      destination: toLocation,
+      start_date: startDate,
+      start_time: startTime,
+      end_date: endDate || null,
+      end_time: endTime || null,
+      status: "assigned",
+    };
+
+    const res = await axios.post(
+      `${BASE_URL}driverAssignment/create/`,
+      assignmentData
+    );
+
+    setMessage("Driver assigned successfully");
+    setMessageType("success");
+
+    // Reset form (add the new time fields to reset)
+    setSelectedDriver("");
+    setSelectedAssignment("");
+    setStartDate("");
+    setStartTime("");
+    setEndDate("");
+    setEndTime("");
+    setFromLocation("");
+    setToLocation("");
+
+    // Refresh assignments
+    fetchDriverAssignments();
+  } catch (err) {
+    console.error("Error assigning driver:", err);
+    console.error("Error response data:", err.response?.data);
+    console.error("Error response status:", err.response?.status);
+    
+    // Handle specific validation errors
+    if (err.response && err.response.status === 400 && err.response.data) {
+      const errorData = err.response.data;
+      console.log("Full error data:", errorData);
+      
+      // Try to extract validation error messages
+      let errorMessage = "Validation failed";
+      
+      if (typeof errorData === "string") {
+        errorMessage = errorData;
+      } else if (errorData.errors) {
+        // Handle the errors object structure
+        const errors = errorData.errors;
+        const errorKeys = Object.keys(errors);
+        if (errorKeys.length > 0) {
+          const firstErrorKey = errorKeys[0];
+          const firstError = errors[firstErrorKey];
+          if (Array.isArray(firstError)) {
+            errorMessage = firstError[0];
+          } else {
+            errorMessage = firstError;
+          }
+        }
+      } else if (errorData.message) {
+        errorMessage = errorData.message;
+      } else {
+        // Handle other validation errors
+        const errorKeys = Object.keys(errorData);
+        if (errorKeys.length > 0) {
+          const firstError = errorData[errorKeys[0]];
+          if (Array.isArray(firstError)) {
+            errorMessage = firstError[0];
+          } else {
+            errorMessage = firstError;
+          }
+        }
+      }
+      
+      setMessage(errorMessage);
       setMessageType("error");
-      return;
-    }
-
-    try {
-      const assignmentData = {
-        driver: selectedDriver,
-        battery_assignment: selectedAssignment,
-        origin: fromLocation,
-        destination: toLocation,
-        start_date: startDate,
-        start_time: startTime,
-        end_date: endDate || null,
-        end_time: endTime || null,
-        status: "assigned",
-      };
-
-      const res = await axios.post(
-        `${BASE_URL}driverAssignment/create/`,
-        assignmentData
-      );
-
-      setMessage("Driver assigned successfully");
-      setMessageType("success");
-
-      // Reset form (add the new time fields to reset)
-      setSelectedDriver("");
-      setSelectedAssignment("");
-      setStartDate("");
-      setStartTime("");
-      setEndDate("");
-      setEndTime("");
-      setFromLocation("");
-      setToLocation("");
-
-      // Refresh assignments
-      fetchDriverAssignments();
-    } catch (err) {
-      console.error("Error assigning driver:", err);
+    } else {
       handleError(err, "Failed to assign driver");
     }
-  };
+  }
+};
 
-  const handleEndAssignment = async (assignmentId) => {
-    try {
-      await axios.patch(`${BASE_URL}driverAssignment/update-status/${assignmentId}/`, {
-        status: "completed",
-      });
+  const handleEndAssignment = (assignmentId) => {
+  setSelectedAssignmentId(assignmentId);
+  setShowEndModal(true);
+};
 
-      setMessage("Assignment ended successfully");
-      setMessageType("success");
-      fetchDriverAssignments();
-    } catch (err) {
-      console.error("Error ending assignment:", err);
-      handleError(err, "Failed to end assignment");
-    }
-  };
+const handleConfirmEndAssignment = async () => {
+  if (!distanceCovered || !moneyPaid) {
+    setMessage("Please fill in both distance covered and money paid");
+    setMessageType("error");
+    return;
+  }
+
+  try {
+    await axios.patch(`${BASE_URL}driverAssignment/update-status/${selectedAssignmentId}/`, {
+      status: "completed",
+      distance_covered: parseFloat(distanceCovered),
+      amount_paid: parseFloat(moneyPaid),
+    });
+
+    setMessage("Assignment ended successfully");
+    setMessageType("success");
+    
+    // Reset modal state
+    setShowEndModal(false);
+    setSelectedAssignmentId(null);
+    setDistanceCovered("");
+    setMoneyPaid("");
+    
+    fetchDriverAssignments();
+  } catch (err) {
+    console.error("Error ending assignment:", err);
+    handleError(err, "Failed to end assignment");
+  }
+};
+
+// Add this new function for canceling the modal
+const handleCancelEndAssignment = () => {
+  setShowEndModal(false);
+  setSelectedAssignmentId(null);
+  setDistanceCovered("");
+  setMoneyPaid("");
+};
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -201,6 +298,66 @@ function Manage_DriverAssignments() {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+
+  const EndAssignmentModal = () => {
+  if (!showEndModal) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <h3 className="text-lg font-semibold text-indigo-700 mb-4">
+          End Assignment & Record Trip
+        </h3>
+        
+        <div className="space-y-4">
+          <div>
+            <label className="block text-gray-700 mb-2 text-sm">
+              Distance Covered (km) <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              className="w-full text-gray-500 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter distance in km"
+              value={distanceCovered}
+              onChange={(e) => setDistanceCovered(e.target.value)}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-gray-700 mb-2 text-sm">
+              Money Paid (RWF) <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              step="1"
+              className="w-full p-3 text-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter amount in RWF"
+              value={moneyPaid}
+              onChange={(e) => setMoneyPaid(e.target.value)}
+            />
+          </div>
+        </div>
+        
+        <div className="flex justify-end space-x-3 mt-6">
+          <button
+            onClick={handleCancelEndAssignment}
+            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleConfirmEndAssignment}
+            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            Confirm End Trip
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -290,6 +447,7 @@ function Manage_DriverAssignments() {
               >
                 <option value="">Select Vehicle & Battery</option>
                 {batteryAssignments
+                  .filter((assignment) => assignment.vehicle_details.status === "online")
                   .filter((assignment) => assignment.status === "active")
                   .map((assignment) => (
                     <option key={assignment.id} value={assignment.id}>
@@ -606,9 +764,15 @@ function Manage_DriverAssignments() {
 
                         <div className="flex">
                           <span className="font-medium text-gray-700 w-32">
-                            Expected Distance:
+                            Distance Covered:
                           </span>
-                          <span className="text-gray-600">0.0 km</span>
+                          <span className="text-gray-600">{assignment.distance_covered || "0"} km</span>
+                        </div>
+                        <div className="flex">
+                          <span className="font-medium text-gray-700 w-32">
+                            Money Paid
+                          </span>
+                          <span className="text-gray-600">{assignment.money_paid || "0"} frw</span>
                         </div>
 
                         <div className="flex">
@@ -636,6 +800,7 @@ function Manage_DriverAssignments() {
           )}
         </div>
       </div>
+      <EndAssignmentModal />
     </div>
   );
 }

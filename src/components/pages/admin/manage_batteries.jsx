@@ -24,71 +24,100 @@ function BatteryManagement() {
   const [dischargeActive, setDischargeActive] = useState(false);
   const [dischargeInterval, setDischargeInterval] = useState(null);
   const [assignmentData, setAssignmentData] = useState(null);
+  const [showChargingModal, setShowChargingModal] = useState(false);
+  const [selectedBatteryForCharging, setSelectedBatteryForCharging] =
+    useState(null);
+  const [newChargeLevel, setNewChargeLevel] = useState("");
 
   const BASE_URL = "http://127.0.0.1:8000/";
 
   // Enhanced error handling function
-  const handleError = (error, defaultMessage = "An error occurred") => {
-    let errorMessage = defaultMessage;
+  // Enhanced error handling function
+const handleError = (error, defaultMessage = "An error occurred") => {
+  let errorMessage = defaultMessage;
 
-    if (error.response) {
-      console.error("API Error Response:", error.response);
-      console.error("Status:", error.response.status);
-      console.error("Data:", error.response.data);
+  if (error.response) {
+    console.error("API Error Response:", error.response);
+    console.error("Status:", error.response.status);
+    console.error("Data:", error.response.data);
 
-      if (error.response.data) {
-        if (typeof error.response.data === "string") {
-          errorMessage = error.response.data;
-        } else if (error.response.data.error) {
-          errorMessage = error.response.data.error;
-        } else if (error.response.data.detail) {
-          errorMessage = error.response.data.detail;
-        } else if (error.response.data.message) {
-          errorMessage = error.response.data.message;
-        } else if (error.response.data.non_field_errors) {
-          errorMessage = Array.isArray(error.response.data.non_field_errors)
-            ? error.response.data.non_field_errors.join(", ")
-            : error.response.data.non_field_errors;
-        } else {
-          const fieldErrors = [];
-          Object.keys(error.response.data).forEach((field) => {
-            const fieldError = error.response.data[field];
-            if (Array.isArray(fieldError)) {
-              fieldError.forEach((err) => {
-                if (typeof err === "object" && err.string) {
-                  fieldErrors.push(err.string);
-                } else if (typeof err === "string") {
-                  fieldErrors.push(err);
-                } else {
-                  fieldErrors.push(String(err));
-                }
-              });
-            } else if (typeof fieldError === "object" && fieldError.string) {
-              fieldErrors.push(fieldError.string);
-            } else if (typeof fieldError === "string") {
-              fieldErrors.push(fieldError);
-            } else {
-              fieldErrors.push(String(fieldError));
-            }
-          });
-
-          if (fieldErrors.length > 0) {
-            errorMessage = fieldErrors.join("; ");
+    if (error.response.data) {
+      // Check for error_summary array first (your backend's format)
+      if (error.response.data.error_summary && Array.isArray(error.response.data.error_summary)) {
+        errorMessage = error.response.data.error_summary.join("; ");
+      }
+      // Check for errors object (field-specific errors)
+      else if (error.response.data.errors && typeof error.response.data.errors === "object") {
+        const fieldErrors = [];
+        Object.keys(error.response.data.errors).forEach((field) => {
+          const fieldError = error.response.data.errors[field];
+          if (Array.isArray(fieldError)) {
+            fieldErrors.push(...fieldError);
+          } else {
+            fieldErrors.push(fieldError);
           }
+        });
+        
+        if (fieldErrors.length > 0) {
+          errorMessage = fieldErrors.join("; ");
         }
       }
-    } else if (error.request) {
-      console.error("Network Error:", error.request);
-      errorMessage = "Network error: Unable to connect to server";
-    } else {
-      console.error("Error:", error.message);
-      errorMessage = error.message || defaultMessage;
-    }
+      // Check for simple string error
+      else if (typeof error.response.data === "string") {
+        errorMessage = error.response.data;
+      }
+      // Check for other common error formats
+      else if (error.response.data.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response.data.detail) {
+        errorMessage = error.response.data.detail;
+      } else if (error.response.data.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response.data.non_field_errors) {
+        errorMessage = Array.isArray(error.response.data.non_field_errors)
+          ? error.response.data.non_field_errors.join(", ")
+          : error.response.data.non_field_errors;
+      } else {
+        // Handle generic field errors as fallback
+        const fieldErrors = [];
+        Object.keys(error.response.data).forEach((field) => {
+          const fieldError = error.response.data[field];
+          if (Array.isArray(fieldError)) {
+            fieldError.forEach((err) => {
+              if (typeof err === "object" && err.string) {
+                fieldErrors.push(err.string);
+              } else if (typeof err === "string") {
+                fieldErrors.push(err);
+              } else {
+                fieldErrors.push(String(err));
+              }
+            });
+          } else if (typeof fieldError === "object" && fieldError.string) {
+            fieldErrors.push(fieldError.string);
+          } else if (typeof fieldError === "string") {
+            fieldErrors.push(fieldError);
+          } else {
+            fieldErrors.push(String(fieldError));
+          }
+        });
 
-    console.error("Final error message:", errorMessage);
-    setMessage(errorMessage);
-    setMessageType("error");
-  };
+        if (fieldErrors.length > 0) {
+          errorMessage = fieldErrors.join("; ");
+        }
+      }
+    }
+  } else if (error.request) {
+    console.error("Network Error:", error.request);
+    errorMessage = "Network error: Unable to connect to server";
+  } else {
+    console.error("Error:", error.message);
+    errorMessage = error.message || defaultMessage;
+  }
+
+  console.error("Final error message:", errorMessage);
+  setMessage(errorMessage);
+  setMessageType("error");
+};
 
   // Clear message after 5 seconds
   useEffect(() => {
@@ -234,9 +263,10 @@ function BatteryManagement() {
   };
 
   const registerBattery = async () => {
-    if (!newBatteryCapacity || !newBatteryInitialCharge) {
+    // Update validation to include Battery ID
+    if (!newBatteryId || !newBatteryCapacity || !newBatteryInitialCharge) {
       setMessage(
-        "Please fill in all required fields (Capacity and Initial Charge)"
+        "Please fill in all required fields (Battery ID, Capacity and Initial Charge)"
       );
       setMessageType("error");
       return;
@@ -244,6 +274,7 @@ function BatteryManagement() {
 
     try {
       const payload = {
+        rol_number: newBatteryId.trim(), // Add rol_number to payload
         capacity: parseFloat(newBatteryCapacity),
         initial_charge: parseFloat(newBatteryInitialCharge),
         status: "active",
@@ -304,15 +335,29 @@ function BatteryManagement() {
     }
   };
 
-  const startCharging = async (batteryId) => {
+  const startCharging = async (batteryId, newCharge = null) => {
     try {
       console.log("Starting charging for battery ID:", batteryId);
-      const res = await axios.post(`${BASE_URL}battery/charge/${batteryId}/`);
+
+      let payload = {};
+      if (newCharge !== null) {
+        payload.new_charge_level = parseFloat(newCharge);
+      }
+
+      const res = await axios.post(
+        `${BASE_URL}battery/charge/${batteryId}/`,
+        payload
+      );
       console.log("Charging started successfully:", res.data);
 
       setMessage("Charging started successfully");
       setMessageType("success");
       fetchBatteries();
+
+      // Close modal and reset states
+      setShowChargingModal(false);
+      setSelectedBatteryForCharging(null);
+      setNewChargeLevel("");
     } catch (err) {
       console.error("Error starting charging:", err);
       handleError(err, "Failed to start charging");
@@ -404,6 +449,32 @@ function BatteryManagement() {
     }
   };
 
+  const openChargingModal = (battery) => {
+    setSelectedBatteryForCharging(battery);
+    setNewChargeLevel(battery.current_charge.toString());
+    setShowChargingModal(true);
+  };
+
+  const closeChargingModal = () => {
+    setShowChargingModal(false);
+    setSelectedBatteryForCharging(null);
+    setNewChargeLevel("");
+  };
+
+  const confirmCharging = () => {
+    if (
+      !newChargeLevel ||
+      parseFloat(newChargeLevel) < 0 ||
+      parseFloat(newChargeLevel) > 100
+    ) {
+      setMessage("Please enter a valid charge level between 0 and 100");
+      setMessageType("error");
+      return;
+    }
+
+    startCharging(selectedBatteryForCharging.id, newChargeLevel);
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -484,14 +555,15 @@ function BatteryManagement() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-gray-700 mb-2 text-sm">
-                Battery ID (e.g., BAT001)
+                Battery ID <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-500"
-                placeholder="Auto-generated"
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700" // Remove bg-gray-100 text-gray-500
+                placeholder="e.g., BAT001"
                 value={newBatteryId}
-                disabled
+                onChange={(e) => setNewBatteryId(e.target.value)}
+                required
               />
             </div>
             <div>
@@ -542,17 +614,19 @@ function BatteryManagement() {
                 Select Vehicle
               </label>
               <select
-                className="w-full text-gray-700 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                value={selectedVehicle}
-                onChange={(e) => setSelectedVehicle(e.target.value)}
-              >
-                <option value="">Select Vehicle</option>
-                {vehicles.map((vehicle) => (
-                  <option key={vehicle.id} value={vehicle.id}>
-                    {vehicle.rol_number} - {vehicle.name}
-                  </option>
-                ))}
-              </select>
+  className="w-full text-gray-700 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+  value={selectedVehicle}
+  onChange={(e) => setSelectedVehicle(e.target.value)}
+>
+  <option value="">Select Vehicle</option>
+  {vehicles
+    .filter((vehicle) => vehicle.status !== "maintenance") // Filter out vehicles with maintenance status
+    .map((vehicle) => (
+      <option key={vehicle.id} value={vehicle.id}>
+        {vehicle.rol_number} - {vehicle.name}
+      </option>
+    ))}
+</select>
             </div>
             <div>
               <label className="block text-gray-700 mb-2 text-sm">
@@ -566,6 +640,7 @@ function BatteryManagement() {
                 <option value="">Select Battery</option>
                 {batteries
                   .filter((b) => b.status === "active")
+                   // Only show batteries that are not assigned
                   .map((battery) => (
                     <option key={battery.id} value={battery.id}>
                       {battery.rol_number} - {battery.capacity}kWh (
@@ -664,6 +739,12 @@ function BatteryManagement() {
                         </span>
                       </p>
                       <p>
+                        <span className="text-gray-600">Initial Charge:</span>{" "}
+                        <span className="text-black font-small">
+                          {battery.initial_charge}%
+                        </span>
+                      </p>
+                      <p>
                         <span className="text-gray-600">Charge:</span>{" "}
                         <span
                           className={`font-bold ${getChargeColor(
@@ -711,7 +792,7 @@ function BatteryManagement() {
                     ) : (
                       battery.status === "active" && (
                         <button
-                          onClick={() => startCharging(battery.id)}
+                          onClick={() => openChargingModal(battery)}
                           className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
                         >
                           Start Charging
@@ -876,6 +957,67 @@ function BatteryManagement() {
           )}
         </div>
       </div>
+
+      {/* Charging Modal */}
+      {showChargingModal && selectedBatteryForCharging && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-indigo-700 mb-4">
+              Start Charging - {selectedBatteryForCharging.rol_number}
+            </h3>
+
+            <div className="space-y-4 mb-6">
+              <div>
+                <span className="text-gray-600">Battery Capacity:</span>{" "}
+                <span className="font-medium text-black">
+                  {selectedBatteryForCharging.capacity} kWh
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-600">Current Charge:</span>{" "}
+                <span
+                  className={`font-bold ${getChargeColor(
+                    selectedBatteryForCharging.current_charge
+                  )}`}
+                >
+                  {selectedBatteryForCharging.current_charge}%
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 mb-2 text-sm">
+                  New Charge Level (%) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  className="w-full p-3 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  value={newChargeLevel}
+                  onChange={(e) => setNewChargeLevel(e.target.value)}
+                  placeholder="Enter charge level"
+                  min="0"
+                  max="100"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={closeChargingModal}
+                className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmCharging}
+                className="flex-1 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
+              >
+                Confirm Charging
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
